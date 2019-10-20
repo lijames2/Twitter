@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Tic Tac Toe</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.1/css/bulma.css" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU"
+        crossorigin="anonymous">
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
+    <script type='text/javascript' src="https://rawgit.com/RobinHerbots/jquery.inputmask/3.x/dist/jquery.inputmask.bundle.js"></script>
+    <link rel="stylesheet" type="text/css" href="/css/ttt.css">
+    <script type="text/javascript">
+
+    </script>
+</head>
+
+<body>
+    <div class="ct">
+        <div class="container">
+            <div class="notification" style="max-width: 600px">
+                <h2 style="border-bottom: 1px dotted grey; margin-bottom: 10px">
+                    <strong>Start A New Game</strong>
+                </h2>
+
+                <form action="/ttt/" method="POST">
+                    <div class="field">
+                        <span style="font-size: 13px;">Please enter your name. </span>
+                        <p class="control">
+                            <input name="name" class="input is-small" type="text" placeholder="Name">
+                        </p>
+                    </div>
+                    <button type="submit" class="button is-primary">Submit</button>
+                </form>
+            </div>
+            
+            <div class="notification" style="max-width: 600px">
+                <h2 style="border-bottom: 1px dotted grey; margin-bottom: 10px">
+                    <strong>Search by Game ID</strong>
+                </h2>
+
+                <form action="/getgame" method="POST">
+                    <div class="field">
+                        <span style="font-size: 13px;">Enter Game ID</span>
+                        <p class="control">
+                            <input name="id" class="input is-small" type="text" placeholder="Game Id">
+                        </p>
+                    </div>
+                    <button type="submit" class="button is-primary">Submit</button>
+                </form>
+            </div>
+
+            <div class="notification" style="max-width: 600px">
+                <form action="/listgames" method="POST">
+                    <button type="submit" class="button is-primary">Game History</button>
+                </form>
+            </div>    
+
+            <div class="notification" style="max-width: 600px">
+                <form action="/getscore" method="POST">
+                    <button type="submit" class="button is-primary">Get Score</button>
+                </form>
+            </div>
+
+            <div class="notification" style="max-width: 600px">
+                <form action="/logout" method="POST">
+                    <button type="submit" class="button is-primary">Logout</button>
+                </form>
+            </div>
+
+        </div>
+        <br/>
+    </div>
+</body>
+
+</html>
