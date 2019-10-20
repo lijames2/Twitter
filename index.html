@@ -1,103 +1,36 @@
-<!DOCTYPE html>
 <html>
-
-<head>
-    <title>Tic Tac Toe</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.1/css/bulma.css" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU"
-        crossorigin="anonymous">
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
-    <script type='text/javascript' src="https://rawgit.com/RobinHerbots/jquery.inputmask/3.x/dist/jquery.inputmask.bundle.js"></script>
-    <link rel="stylesheet" type="text/css" href="/css/ttt.css">
-    <script type="text/javascript">
-
-    </script>
-</head>
-
-<body>
-    <div class="ct">
-        <div class="container">
-            <div class="notification" style="max-width: 600px">
-                <h2 style="border-bottom: 1px dotted grey; margin-bottom: 10px">
-                    <strong>Start A New Game</strong>
-                </h2>
-
-                <form action="/ttt/" method="POST">
+    <head>
+        <title>Twitter</title>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.1/css/bulma.css" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU"
+            crossorigin="anonymous">
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
+        <link rel="stylesheet" type="text/css" href="public/css/twitter.css">
+    </head>
+    <body>
+        <div class="container login-wrapper">
+            <div class="notification">
                     <div class="field">
-                        <span style="font-size: 13px;">Please enter your name. </span>
-                        <p class="control">
-                            <input name="name" class="input is-small" type="text" placeholder="Name">
-                        </p>
+                        <label class="label">Username</label>
+                        <div class="control has-icons-left has-icons-right">
+                            <input class="input" type="text" placeholder="Enter your username">
+                            <span class="icon is-small is-left">
+                            <i class="fas fa-user"></i>
+                            </span>
+                        </div>
                     </div>
-                    <button type="submit" class="button is-primary">Submit</button>
-                </form>
-            </div>
-
-            <div class="notification" style="max-width: 600px">
-                <form action="/login" method="POST">
-                    <h2 style="border-bottom: 1px dotted grey; margin-bottom: 10px">
-                        <strong>Login</strong>
-                    </h2>
+                        
                     <div class="field">
-                        <span style="font-size: 13px;">Username</span>
-                        <p class="control">
-                            <input name="username" class="input is-small" type="text" placeholder="Username">
-                        </p>
-                        <span style="font-size: 13px;">Password</span>
-                        <p class="control">
-                            <input name="password" class="input is-small" type="text" placeholder="Password">
-                        </p>
+                        <label class="label">Email</label>
+                        <div class="control has-icons-left has-icons-right">
+                            <input class="input" type="email" placeholder="Enter your email">
+                            <span class="icon is-small is-left">
+                            <i class="fas fa-envelope"></i>
+                            </span>
+                        </div>
                     </div>
-                    <button type="submit" class="button is-primary">Submit</button>
-                </form>
             </div>
-
-            <div class="notification" style="max-width: 600px">
-                <form action="/adduser" method="POST">
-                    <h2 style="border-bottom: 1px dotted grey; margin-bottom: 10px">
-                        <strong>Sign Up</strong>
-                    </h2>
-                    <div class="field">
-                        <span style="font-size: 13px;">Username</span>
-                        <p class="control">
-                            <input name="username" class="input is-small" type="text" placeholder="Username">
-                        </p>
-                        <span style="font-size: 13px;">Password</span>
-                        <p class="control">
-                            <input name="password" class="input is-small" type="text" placeholder="Password">
-                        </p>
-                        <span style="font-size: 13px;">Email</span>
-                        <p class="control">
-                            <input name="email" class="input is-small" type="text" placeholder="Email">
-                        </p>
-                    </div>
-                    <button type="submit" class="button is-primary">Submit</button>
-                </form>
-            </div>
-
-            <div class="notification" style="max-width: 600px">
-                <h2 style="border-bottom: 1px dotted grey; margin-bottom: 10px">
-                    <strong>Verify</strong>
-                </h2>
-
-                <form action="/verify" method="POST">
-                    <div class="field">
-                        <span style="font-size: 13px;">Email</span>
-                        <p class="control">
-                            <input name="email" class="input is-small" type="text" placeholder="Email">
-                        </p>
-                        <span style="font-size: 13px;">Key</span>
-                        <p class="control">
-                            <input name="key" class="input is-small" type="text" placeholder="Key">
-                        </p>
-                    </div>
-                    <button type="submit" class="button is-primary">Submit</button>
-                </form>
-            </div>
-
+            <br />
         </div>
-        <br/>
-    </div>
-</body>
-
+    </body>
 </html>
