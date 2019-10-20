@@ -107,9 +107,9 @@ app.post('/ttt', urlencodedParser, function (req, res) {
             });
         }
         else {
-            res.status(200).send({
-                status: "ERROR"
-            })
+            res.status(500).send({
+                error: "ERROR"
+            });
         }
     });
  })
@@ -132,9 +132,9 @@ app.post('/ttt', urlencodedParser, function (req, res) {
             });    
         }
         else {
-            res.status(200).send({
-                status: "ERROR"
-            })
+            res.status(500).send({
+                error: "ERROR"
+            });
         }
      });
  })
@@ -146,18 +146,18 @@ app.post('/ttt', urlencodedParser, function (req, res) {
             status: "OK"
         });   
     } else {
-        res.status(200).send({
-            status: "ERROR"
-        });  
+        res.status(500).send({
+            error: "ERROR"
+        });
     }
  })
 
  app.post('/listgames', function(req, res) {
     db.getAllGames(req.session.username, (err, result) => {
         if (err) {
-            res.status(200).send({
-                status: "ERROR"
-            })
+            res.status(500).send({
+                error: "ERROR"
+            });
         } else {
             res.status(200).send({
                 status: "OK",
@@ -171,9 +171,9 @@ app.post('/ttt', urlencodedParser, function (req, res) {
     var id = req.body.id;
     db.getGamesById(id, (err, result) => {
         if(err) {
-            res.status(200).send({
-                status: "ERROR"
-            })
+            res.status(500).send({
+                error: "ERROR"
+            });
         } else {
             res.status(200).send({
                 status: "OK",
@@ -187,9 +187,9 @@ app.post('/ttt', urlencodedParser, function (req, res) {
  app.post('/getscore', function(req, res) {
     db.getScore(req.session.username, (err, result) => {
         if(err) {
-            res.status(200).send({
-                status: "ERROR"
-            })
+            res.status(500).send({
+                error: "ERROR"
+            });
         } else {
             res.status(200).send({
                 status: "OK",
@@ -288,8 +288,8 @@ app.post('/ttt', urlencodedParser, function (req, res) {
             today = mm + '/' + dd + '/' + yyyy;
             db.addGame(user, today, grid, winner, (err, result) => {
                 if (err) {
-                    res.status(200).send({
-                        status: "ERROR"
+                    res.status(500).send({
+                        error: "ERROR"
                     });
                 } else {
                     req.session.game_id = result.id;
@@ -301,8 +301,8 @@ app.post('/ttt', urlencodedParser, function (req, res) {
             console.log(grid);
             db.updateGame(req.session.game_id, grid, winner, (err, result) => {
                 if(err) {
-                    res.status(200).send({
-                        status: "ERROR"
+                    res.status(500).send({
+                        error: "ERROR"
                     });
                 } else {
                     if(winner === 'X' || winner === 'O' || grid.filter(x => x === " ").length == 0) {
