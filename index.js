@@ -241,13 +241,17 @@ app.get('/item/:id', function (req, res) {
 app.post('/search', function (req, res) {
     console.log(req.body);
     let timestamp = Math.floor((new Date()).getTime() / 1000);
-    if (req.body.timestamp){
+    if (req.body.timestamp) {
         timestamp = Math.floor(req.body.timestamp);
     }
     let limit = 25;
-    if (req.body.limit && req.body.limit <= 100 && req.body.limit > 0) {
+    if (req.body.limit) {
         limit = req.body.limit;
+        if (req.body.limit > 100 || req.body.limit < 0) {
+            limit = 25;
+        }
     }
+    console.log(limit);
     db.search(timestamp, limit, (err, result) => {
         if (err) {
             res.status(500).send({
