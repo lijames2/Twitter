@@ -78,7 +78,7 @@ module.exports = {
     },
     getTweet: function (tweetID, callback) {
         const getTweetQuery = 'SELECT * FROM Tweets WHERE tweetID=?';
-        db.get(getScoreQuery, [tweetID], (err, result) => {
+        db.get(getTweetQuery, [tweetID], (err, result) => {
             if (err) {
                 callback(err);
             } else {
