@@ -115,11 +115,13 @@ app.get('/logout', function (req, res) {
     db.verify(email, key, (err, result) => {
         if (result == 1) {
             res.status(200).send({
-                status: "OK"
+                status: "OK",
+                error: "x"
             });
         }
         else {
             res.status(500).send({
+                status: "error",
                 error: "ERROR"
             });
         }
@@ -129,7 +131,6 @@ app.get('/logout', function (req, res) {
  app.post('/login', function(req, res) {
      var username = req.body.username;
      var password = req.body.password;
-     console.log("SAD");
 
      db.login(username, password, (err, result) => {
         if (err) {
@@ -140,6 +141,7 @@ app.get('/logout', function (req, res) {
         else if (result == 1) {   
             req.session.loggedin = true;
             req.session.username = username;
+            console.log("SAD");
             res.status(200).send({
                 status: "OK"
             });    
