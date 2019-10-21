@@ -34,11 +34,11 @@ app.get('/', function (req, res) {
 //     res.sendFile(__dirname + "/" + "index.html");
 // })
 
-app.get('/signup', function(req, res) {
+app.get('/signup', function (req, res) {
     res.sendFile(__dirname + "/" + "signup.html");
 })
 
-app.get('/verify', function(req, res) {
+app.get('/verify', function (req, res) {
     res.sendFile(__dirname + "/" + "verify.html");
 })
 
@@ -66,7 +66,7 @@ app.get('/logout', function (req, res) {
 //     res.end();
 // })
 
- app.post('/adduser', urlencodedParser, function(req, res) {
+app.post('/adduser', urlencodedParser, function (req, res) {
     var username = req.body.username;
     var password = req.body.password;
     var email = req.body.email;
@@ -87,18 +87,18 @@ app.get('/logout', function (req, res) {
                     pass: 'cse356-cloud',
                 }
             });
-            
+
             let mailOptions = {
                 from: 'cloud356ttt@gmail.com',
                 to: email,
                 subject: 'Verify your email.',
                 text: 'validation key: ' + '<' + key + '>',
             };
-            
-            transporter.sendMail(mailOptions)
-                .then(function(response) {
 
-                }).catch(function(error) {
+            transporter.sendMail(mailOptions)
+                .then(function (response) {
+
+                }).catch(function (error) {
 
                 });
             res.status(200).send({
@@ -106,16 +106,16 @@ app.get('/logout', function (req, res) {
             });
         }
     });
- })
+})
 
- app.post('/verify', function(req, res) {
+app.post('/verify', function (req, res) {
     var email = req.body.email;
     var key = req.body.key;
 
     db.verify(email, key, (err, result) => {
         if (result == 1) {
             res.status(200).send({
-                status : "OK",
+                status: "OK",
                 error: ""
             });
         }
@@ -126,25 +126,25 @@ app.get('/logout', function (req, res) {
             });
         }
     });
- })
+})
 
- app.post('/login', function(req, res) {
-     var username = req.body.username;
-     var password = req.body.password;
+app.post('/login', function (req, res) {
+    var username = req.body.username;
+    var password = req.body.password;
 
-     db.login(username, password, (err, result) => {
+    db.login(username, password, (err, result) => {
         if (err) {
             res.status(400).send({
                 success: false
             });
         }
-        else if (result == 1) {   
+        else if (result == 1) {
             req.session.loggedin = true;
             req.session.username = username;
             res.status(200).send({
                 status: "OK",
                 error: ""
-            });    
+            });
         }
         else {
             res.status(500).send({
@@ -152,31 +152,47 @@ app.get('/logout', function (req, res) {
                 error: "error"
             });
         }
-     });
- })
+    });
+})
 
- app.post('/logout', function(req, res) {
+app.post('/logout', function (req, res) {
     if (req.session.loggedin) {
-        res.clearCookie('user_sid');    
+        res.clearCookie('user_sid');
         res.status(200).send({
             status: "OK",
             error: ""
-        });   
+        });
     } else {
         res.status(500).send({
             status: "error",
             error: "error"
         });
     }
- })
+})
 
-app.post('/additem', function(req,res) {
-    var tweet = req.body.content;
-    var childType = req.body.childType;
+app.post('/additem', function (req, res) {
+    //var tweet = req.body.content;
+    //var childType = req.body.childType;
+    console.log(req.body);
+    let tweet = {
+        username: req.session.username,
+        originalUsername: req.body.originalUsername,
+        content: req.body.content,
+        parent: req.body.parent,
+        childType: req.body.childType,
+        media: req.body.media
+    };
     db.addTweet(tweet, (err, result) => {
-        if (result == 1) {
+        if (err) {
+            res.status(500).send({
+                status: "error",
+                id: "",
+                error: "error"
+            });
+        }
+        else if (result == 1) {
             res.status(200).send({
-                status : "OK",
+                status: "OK",
                 id: "",
                 error: ""
             });
@@ -191,7 +207,7 @@ app.post('/additem', function(req,res) {
     })
 })
 
- app.post('/listgames', function(req, res) {
+app.post('/listgames', function (req, res) {
     db.getAllGames(req.session.username, (err, result) => {
         if (err) {
             res.status(500).send({
@@ -205,12 +221,12 @@ app.post('/additem', function(req,res) {
             })
         }
     })
- })
+})
 
- app.post('/getgame', function(req, res) {
+app.post('/getgame', function (req, res) {
     var id = req.body.id;
     db.getGamesById(id, (err, result) => {
-        if(err) {
+        if (err) {
             res.status(500).send({
                 error: "ERROR"
             });
@@ -222,11 +238,11 @@ app.post('/additem', function(req,res) {
             })
         }
     })
- }) 
+})
 
- app.post('/getscore', function(req, res) {
+app.post('/getscore', function (req, res) {
     db.getScore(req.session.username, (err, result) => {
-        if(err) {
+        if (err) {
             res.status(500).send({
                 error: "ERROR"
             });
@@ -239,7 +255,7 @@ app.post('/additem', function(req,res) {
             })
         }
     })
- });
+});
 
 var server = app.listen(80, function () {
     var host = server.address().address
