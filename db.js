@@ -68,7 +68,7 @@ module.exports = {
     },
     addTweet: function (tweet, callback) {
         const addTweetQuery = 'INSERT INTO Tweets(tweetID,username,originalUsername,content,parent,type,media,time) VALUES(?,?,?,?,?,?,?,datetime(\'now\',\'localtime\'))';
-        db.run(getScoreQuery, [tweet.tweetID, tweet.username, tweet.originalUsername, tweet.content, tweet.parent, tweet.type, tweet.media], (err, result) => {
+        db.run(addTweetQuery, [tweet.tweetID, tweet.username, tweet.originalUsername, tweet.content, tweet.parent, tweet.type, tweet.media], (err, result) => {
             if (err) {
                 callback(err);
             } else {
