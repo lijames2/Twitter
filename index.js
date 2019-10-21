@@ -245,7 +245,7 @@ app.post('/search', function (req, res) {
         timestamp = Math.floor(req.body.timestamp);
     }
     let limit = 25;
-    if (req.body.limit && req.body.limit < 100 && req.body.limit > 0) {
+    if (req.body.limit && req.body.limit <= 100 && req.body.limit > 0) {
         limit = req.body.limit;
     }
     db.search(timestamp, limit, (err, result) => {
