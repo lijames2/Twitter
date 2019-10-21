@@ -67,7 +67,7 @@ module.exports = {
         });
     },
     addTweet: function (tweet, callback) {
-        const addTweetQuery = 'INSERT INTO Tweets(tweetID,username,originalUsername,content,parent,childType,media,time) VALUES(?,?,?,?,?,?,?,strftime(\'%s\',\'now\'))';
+        const addTweetQuery = 'INSERT INTO Tweets(tweetID,username,originalUsername,content,parent,childType,media,timestamp) VALUES(?,?,?,?,?,?,?,strftime(\'%s\',\'now\'))';
         db.run(addTweetQuery, [tweet.tweetID, tweet.username, tweet.originalUsername, tweet.content, tweet.parent, tweet.childType, tweet.media], (err, result) => {
             if (err) {
                 callback(err);

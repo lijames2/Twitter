@@ -185,7 +185,7 @@ app.post('/additem', function (req, res) {
         console.log(req.body);
         let tweet = {
             tweetID: id,
-            username: "user1",
+            username: req.session.username,
             originalUsername: "null",
             content: req.body.content,
             parent: 0,
@@ -235,18 +235,20 @@ app.post('/listgames', function (req, res) {
     })
 })
 
-app.post('/getgame', function (req, res) {
-    var id = req.body.id;
-    db.getGamesById(id, (err, result) => {
+app.get('/item/:id', function (req, res) {
+    let id = parseInt(req.params.id);
+    console.log(id);
+    db.getTweet(id, (err, result) => {
         if (err) {
             res.status(500).send({
-                error: "ERROR"
+                status: "error",
+                error: err
             });
         } else {
             res.status(200).send({
                 status: "OK",
-                grid: result.grid,
-                winner: result.winner
+                item: result,
+                error: null
             })
         }
     })
