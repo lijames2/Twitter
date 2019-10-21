@@ -176,12 +176,14 @@ app.post('/additem', function(req,res) {
         if (result == 1) {
             res.status(200).send({
                 status : "OK",
+                id: "",
                 error: ""
             });
         }
         else {
             res.status(500).send({
                 status: "error",
+                id: "",
                 error: "error"
             });
         }
