@@ -171,7 +171,8 @@ app.get('/logout', function (req, res) {
  })
 
 app.post('/additem', function(req,res) {
-    var tweet = req.body;
+    var tweet = req.body.content;
+    var childType = req.body.childType;
     db.addTweet(tweet, (err, result) => {
         if (result == 1) {
             res.status(200).send({
