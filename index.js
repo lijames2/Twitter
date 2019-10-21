@@ -219,22 +219,6 @@ app.post('/additem', function (req, res) {
     }
 })
 
-app.post('/listgames', function (req, res) {
-    db.getAllGames(req.session.username, (err, result) => {
-        if (err) {
-            res.status(500).send({
-                status: "OK",
-                error: ""
-            });
-        } else {
-            res.status(200).send({
-                status: "OK",
-                error: ""
-            })
-        }
-    })
-})
-
 app.get('/item/:id', function (req, res) {
     let id = parseInt(req.params.id);
     console.log(id);
@@ -253,6 +237,30 @@ app.get('/item/:id', function (req, res) {
         }
     })
 })
+
+app.post('/search', function (req, res) {
+    console.log(req.body);
+    let timestamp = req.body.timestamp;
+    let limit = 25;
+    if (req.body.limit && req.body.limit < 100 && req.body.limit > 0) {
+        limit = req.body.limit;
+    }
+    db.search(timestamp, limit, (err, result) => {
+        if (err) {
+            res.status(500).send({
+                status: "error",
+                error: err
+            });
+        } else {
+            res.status(200).send({
+                status: "OK",
+                error: null,
+                items: result
+            })
+        }
+    })
+})
+
 
 app.post('/getscore', function (req, res) {
     db.getScore(req.session.username, (err, result) => {
