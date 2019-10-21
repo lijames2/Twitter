@@ -180,41 +180,43 @@ app.post('/additem', function (req, res) {
             error: "error"
         });
     }
-    let id = Math.floor((Math.random() * 1000000000) + 1);
-    console.log(req.body);
-    let tweet = {
-        tweetID: id,
-        username: "user1",
-        originalUsername: "null",
-        content: req.body.content,
-        parent: 0,
-        childType: "null",
-        media: "null"
-    };
-    console.log(tweet);
-    db.addTweet(tweet, (err, result) => {
-        if (err) {
-            res.status(500).send({
-                status: "error",
-                id: id,
-                error: "error"
-            });
-        }
-        else if (result == 1) {
-            res.status(200).send({
-                status: "OK",
-                id: id,
-                error: ""
-            });
-        }
-        else {
-            res.status(500).send({
-                status: "error",
-                id: id,
-                error: "error"
-            });
-        }
-    })
+    else {
+        let id = Math.floor((Math.random() * 1000000000) + 1);
+        console.log(req.body);
+        let tweet = {
+            tweetID: id,
+            username: "user1",
+            originalUsername: "null",
+            content: req.body.content,
+            parent: 0,
+            childType: "null",
+            media: "null"
+        };
+        console.log(tweet);
+        db.addTweet(tweet, (err, result) => {
+            if (err) {
+                res.status(500).send({
+                    status: "error",
+                    id: id,
+                    error: "error"
+                });
+            }
+            else if (result == 1) {
+                res.status(200).send({
+                    status: "OK",
+                    id: id,
+                    error: ""
+                });
+            }
+            else {
+                res.status(500).send({
+                    status: "error",
+                    id: id,
+                    error: "error"
+                });
+            }
+        })
+    }
 })
 
 app.post('/listgames', function (req, res) {
