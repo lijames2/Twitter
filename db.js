@@ -86,9 +86,9 @@ module.exports = {
             }
         });
     },
-    search: function (time, limit, callback) {
-        const getScoreQuery = 'SELECT * FROM Tweets WHERE time<? LIMIT ?';
-        db.get(getScoreQuery, [time.limit], (err, result) => {
+    search: function (timestamp, limit, callback) {
+        const getScoreQuery = 'SELECT * FROM Tweets WHERE timestamp<? LIMIT ?';
+        db.get(getScoreQuery, [timestamp,limit], (err, result) => {
             if (err) {
                 callback(err);
             } else {
