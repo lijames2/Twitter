@@ -40,9 +40,11 @@ html, body {
     color: #657786;
 }
 
-.login-link {
-    color: #1c94e0 !important;
-    font-size: 14px;
+.link-button { 
+    background: none;
+    border: none;
+    color: #1c94e0;
+    cursor: pointer; 
 }
 
 .login-btn {

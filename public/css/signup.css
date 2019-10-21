@@ -73,3 +73,10 @@ html, body {
     font-size: 13px;
     margin-top: 10px;
 }
+
+.link-button { 
+    background: none;
+    border: none;
+    color: #1c94e0;
+    cursor: pointer; 
+}
