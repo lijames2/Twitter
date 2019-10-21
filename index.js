@@ -174,13 +174,13 @@ app.post('/additem', function(req,res) {
     //var tweet = req.body.content;
     //var childType = req.body.childType;
     console.log(req.body);
-    tweet = {
-        username = req.session.username,
-        originalUsername = req.body.originalUsername,
-        content = req.body.content,
-        parent = req.body.parent,
-        childType = req.body.childType,
-        media = req.body.media
+    let tweet = {
+        username : req.session.username,
+        originalUsername : req.body.originalUsername,
+        content : req.body.content,
+        parent : req.body.parent,
+        childType : req.body.childType,
+        media : req.body.media
     };
     db.addTweet(tweet, (err, result) => {
         if (result == 1) {
