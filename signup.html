@@ -12,27 +12,29 @@
     </head>
     <body>
         <div class="container signup-wrapper">
-            <h1 class="title signup-title">Create your account</h1>
-            <div class="field signup-input">
-                <div class="control">
-                    <a class="signup-subtitle">Username</a>
-                    <input class="signup-control" type="text">
-                </div>
-            </div>  
-            <div class="field signup-input">
-                <div class="control">
-                    <a class="signup-subtitle">Password</a>
-                    <input class="signup-control" type="password">
-                </div>
-            </div>  
-            <div class="field signup-input">
-                <div class="control">
-                    <a class="signup-subtitle">Email</a>
-                    <input class="signup-control" type="email">
-                </div>
-            </div>  
-            <br />
-            <a class="button">Sign Up</a>
+            <form action="/adduser/" method="POST">
+                <h1 class="title signup-title">Create your account</h1>
+                <div class="field signup-input">
+                    <div class="control">
+                        <a class="signup-subtitle">Username</a>
+                        <input name="username" class="signup-control" type="text">
+                    </div>
+                </div>  
+                <div class="field signup-input">
+                    <div class="control">
+                        <a class="signup-subtitle">Password</a>
+                        <input name="password" class="signup-control" type="text">
+                    </div>
+                </div>  
+                <div class="field signup-input">
+                    <div class="control">
+                        <a class="signup-subtitle">Email</a>
+                        <input name="email" class="signup-control" type="text">
+                    </div>
+                </div>  
+                <br />
+                <button type="submit" class="button">Sign Up</button>
+            </form>
             <form action="/" method="GET">
                 <h6 class="login-subtitle signup-subtitle2">Already have an existing account? <input type="submit" class="link-button" value="Log in »"/></h6>
             </form>
