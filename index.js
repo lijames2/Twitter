@@ -173,38 +173,50 @@ app.post('/logout', function (req, res) {
 app.post('/additem', function (req, res) {
     //var tweet = req.body.content;
     //var childType = req.body.childType;
-    console.log(req.body);
-    let tweet = {
-        username: req.session.username,
-        originalUsername: req.body.originalUsername,
-        content: req.body.content,
-        parent: req.body.parent,
-        childType: req.body.childType,
-        media: req.body.media
-    };
-    db.addTweet(tweet, (err, result) => {
-        if (err) {
-            res.status(500).send({
-                status: "error",
-                id: "",
-                error: "error"
-            });
-        }
-        else if (result == 1) {
-            res.status(200).send({
-                status: "OK",
-                id: "",
-                error: ""
-            });
-        }
-        else {
-            res.status(500).send({
-                status: "error",
-                id: "",
-                error: "error"
-            });
-        }
-    })
+    if (!req.session.loggedin) {
+        res.status(500).send({
+            status: "error",
+            id: "",
+            error: "error"
+        });
+    }
+    else {
+        let id = Math.floor((Math.random() * 1000000000) + 1);
+        console.log(req.body);
+        let tweet = {
+            tweetID: id,
+            username: "user1",
+            originalUsername: "null",
+            content: req.body.content,
+            parent: 0,
+            childType: "null",
+            media: "null"
+        };
+        console.log(tweet);
+        db.addTweet(tweet, (err, result) => {
+            if (err) {
+                res.status(500).send({
+                    status: "error",
+                    id: id,
+                    error: "error"
+                });
+            }
+            else if (result == 1) {
+                res.status(200).send({
+                    status: "OK",
+                    id: id,
+                    error: ""
+                });
+            }
+            else {
+                res.status(500).send({
+                    status: "error",
+                    id: id,
+                    error: "error"
+                });
+            }
+        })
+    }
 })
 
 app.post('/listgames', function (req, res) {
