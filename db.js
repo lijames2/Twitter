@@ -87,8 +87,8 @@ module.exports = {
         });
     },
     search: function (timestamp, limit, callback) {
-        const getScoreQuery = 'SELECT * FROM Tweets WHERE timestamp<=? ORDER BY timestamp DESC LIMIT ?';
-        db.all(getScoreQuery, [timestamp,limit], (err, result) => {
+        const searchQuery = 'SELECT * FROM Tweets WHERE timestamp<=? ORDER BY timestamp DESC LIMIT ?';
+        db.all(searchQuery, [timestamp,limit], (err, result) => {
             if (err) {
                 callback(err);
             } else {
