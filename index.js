@@ -184,7 +184,7 @@ app.post('/additem', function (req, res) {
         let id = Math.floor((Math.random() * 1000000000) + 1);
         console.log(req.body);
         let tweet = {
-            tweetID: id,
+            id: id,
             username: req.session.username,
             originalUsername: "null",
             content: req.body.content,

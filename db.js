@@ -67,8 +67,8 @@ module.exports = {
         });
     },
     addTweet: function (tweet, callback) {
-        const addTweetQuery = 'INSERT INTO Tweets(tweetID,username,originalUsername,content,parent,childType,media,timestamp) VALUES(?,?,?,?,?,?,?,strftime(\'%s\',\'now\'))';
-        db.run(addTweetQuery, [tweet.tweetID, tweet.username, tweet.originalUsername, tweet.content, tweet.parent, tweet.childType, tweet.media], (err, result) => {
+        const addTweetQuery = 'INSERT INTO Tweets(id,username,originalUsername,content,parent,childType,media,timestamp) VALUES(?,?,?,?,?,?,?,strftime(\'%s\',\'now\'))';
+        db.run(addTweetQuery, [tweet.id, tweet.username, tweet.originalUsername, tweet.content, tweet.parent, tweet.childType, tweet.media], (err, result) => {
             if (err) {
                 callback(err);
             } else {
@@ -76,9 +76,9 @@ module.exports = {
             }
         });
     },
-    getTweet: function (tweetID, callback) {
-        const getTweetQuery = 'SELECT * FROM Tweets WHERE tweetID=?';
-        db.get(getTweetQuery, [tweetID], (err, result) => {
+    getTweet: function (id, callback) {
+        const getTweetQuery = 'SELECT * FROM Tweets WHERE id=?';
+        db.get(getTweetQuery, [id], (err, result) => {
             if (err) {
                 callback(err);
             } else {
