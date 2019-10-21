@@ -173,7 +173,7 @@ app.post('/logout', function (req, res) {
 app.post('/additem', function (req, res) {
     //var tweet = req.body.content;
     //var childType = req.body.childType;
-    if (req.session.loggedin) {
+    if (!req.session.loggedin) {
         res.status(500).send({
             status: "error",
             id: "",
