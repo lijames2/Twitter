@@ -115,7 +115,7 @@ app.get('/logout', function (req, res) {
     db.verify(email, key, (err, result) => {
         if (result == 1) {
             res.status(200).send({
-                status: "OK",
+                status : "OK",
                 error: "x"
             });
         }
@@ -141,13 +141,14 @@ app.get('/logout', function (req, res) {
         else if (result == 1) {   
             req.session.loggedin = true;
             req.session.username = username;
-            console.log("SAD");
             res.status(200).send({
-                status: "OK"
+                status: "OK",
+                error: "x"
             });    
         }
         else {
             res.status(500).send({
+                status: "error",
                 error: "error"
             });
         }
