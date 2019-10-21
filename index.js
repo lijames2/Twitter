@@ -22,12 +22,24 @@ app.use(express.static(__dirname + '/public'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.get('/ttt', function (req, res) {
+app.get('/', function (req, res) {
     if (req.session.loggedin) {
         res.redirect('/logout');
     } else {
         res.sendFile(__dirname + "/" + "index.html");
     }
+})
+
+app.get('/login', function(req, res) {
+    res.sendFile(__dirname + "/" + "index.html");
+})
+
+app.get('/signup', function(req, res) {
+    res.sendFile(__dirname + "/" + "signup.html");
+})
+
+app.get('/verify', function(req, res) {
+    res.sendFile(__dirname + "/" + "verify.html");
 })
 
 app.get('/logout', function (req, res) {
@@ -38,21 +50,21 @@ app.get('/logout', function (req, res) {
     }
 })
 
-app.post('/ttt', urlencodedParser, function (req, res) {
-    response = {
-        name: req.body.name
-    };
-    var fileContent = fs.readFileSync(__dirname + "/" + "grid.html", 'utf8');
-    var today = new Date();
-    var dd = String(today.getDate()).padStart(2, '0');
-    var mm = String(today.getMonth() + 1).padStart(2, '0');
-    var yyyy = today.getFullYear();
-    today = mm + '/' + dd + '/' + yyyy;
+// app.post('/ttt', urlencodedParser, function (req, res) {
+//     response = {
+//         name: req.body.name
+//     };
+//     var fileContent = fs.readFileSync(__dirname + "/" + "grid.html", 'utf8');
+//     var today = new Date();
+//     var dd = String(today.getDate()).padStart(2, '0');
+//     var mm = String(today.getMonth() + 1).padStart(2, '0');
+//     var yyyy = today.getFullYear();
+//     today = mm + '/' + dd + '/' + yyyy;
 
-    fileContent = fileContent.replace("<h2 id='name'>Test</h2>", "<h2 id='name'>Welcome: " + response.name + ", today is " + today + "!</h2>")
-    res.write(fileContent);
-    res.end();
-})
+//     fileContent = fileContent.replace("<h2 id='name'>Test</h2>", "<h2 id='name'>Welcome: " + response.name + ", today is " + today + "!</h2>")
+//     res.write(fileContent);
+//     res.end();
+// })
 
  app.post('/adduser', urlencodedParser, function(req, res) {
     var username = req.body.username;

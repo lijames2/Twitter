@@ -35,8 +35,12 @@
                 <a class="button login-btn">Log in</a>
                 <br />
                 <br />
-                <h6 class="login-subtitle">New to Twitter? <a class="login-link" href="./signup.html">Sign up now »</a></h6>
-                <h6 class="login-subtitle">Already signed up? <a class="login-link" href="./verify.html">Verify your account »</a></h6>
+                <form action="/signup/" method="GET">
+                    <h6 class="login-subtitle">New to Twitter? <a class="login-link"><input type="submit" value="Sign Up now »"/></a></h6>
+                </form>
+                <form action="/verify/" method="GET">
+                    <h6 class="login-subtitle">Already signed up? <a class="login-link"><input type="submit" value="Verify your account »"/></a></h6>
+                </form>
             </div>
             <br />
         </div>
