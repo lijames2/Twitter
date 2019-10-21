@@ -11,6 +11,26 @@
         <link rel="stylesheet" type="text/css" href="public/css/verify.css">
     </head>
     <body>
-
+        <div class="container login-wrapper verify-wrapper">
+                <form action="/verify/" method="POST">
+                    <h1 class="title">Verify your account</h1>
+                    <div class="field">
+                        <label class="subtitle verify-subtitle">Enter your email:</label>
+                        <div class="control">
+                            <input name="email" class="input" type="text">
+                        </div>
+                    </div>      
+                    <div class="field">
+                        <label class="subtitle verify-subtitle">Enter your verification key:</label>
+                        <div class="control">
+                            <input name="key" class="input" type="text">
+                        </div>
+                    </div>
+                    <button type="submit" class="button login-btn">Verify</button>
+                </form>
+                <form action="/" method="GET">
+                    <h6 class="login-subtitle signup-subtitle2">Already have an existing account? <input type="submit" class="link-button" value="Log in »"/></h6>
+                </form>
+        </div>
     </body>
 </html>
