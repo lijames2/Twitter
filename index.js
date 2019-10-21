@@ -173,6 +173,13 @@ app.post('/logout', function (req, res) {
 app.post('/additem', function (req, res) {
     //var tweet = req.body.content;
     //var childType = req.body.childType;
+    if (req.session.loggedin) {
+        res.status(500).send({
+            status: "error",
+            id: "",
+            error: "error"
+        });
+    }
     let id = Math.floor((Math.random() * 1000000000) + 1);
     console.log(req.body);
     let tweet = {
