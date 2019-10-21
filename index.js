@@ -240,7 +240,10 @@ app.get('/item/:id', function (req, res) {
 
 app.post('/search', function (req, res) {
     console.log(req.body);
-    let timestamp = req.body.timestamp;
+    let timestamp = Math.floor((new Date()).getTime() / 1000);
+    if (req.body.timestamp){
+        timestamp = Math.floor(req.body.timestamp);
+    }
     let limit = 25;
     if (req.body.limit && req.body.limit < 100 && req.body.limit > 0) {
         limit = req.body.limit;
