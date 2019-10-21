@@ -146,7 +146,7 @@ app.get('/logout', function (req, res) {
         }
         else {
             res.status(500).send({
-                error: "ERROR"
+                error: "error"
             });
         }
      });
