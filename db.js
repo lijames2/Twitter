@@ -67,8 +67,8 @@ module.exports = {
         });
     },
     addTweet: function (tweet, callback) {
-        const addTweetQuery = 'INSERT INTO Tweets(tweetID,username,originalUsername,content,parent,type,media,time) VALUES(?,?,?,?,?,?,?,datetime(\'now\',\'localtime\'))';
-        db.run(addTweetQuery, [tweet.tweetID, tweet.username, tweet.originalUsername, tweet.content, tweet.parent, tweet.type, tweet.media], (err, result) => {
+        const addTweetQuery = 'INSERT INTO Tweets(id,username,originalUsername,content,parent,childType,media,timestamp) VALUES(?,?,?,?,?,?,?,strftime(\'%s\',\'now\'))';
+        db.run(addTweetQuery, [tweet.id, tweet.username, tweet.originalUsername, tweet.content, tweet.parent, tweet.childType, tweet.media], (err, result) => {
             if (err) {
                 callback(err);
             } else {
@@ -76,9 +76,9 @@ module.exports = {
             }
         });
     },
-    getTweet: function (tweetID, callback) {
-        const getTweetQuery = 'SELECT * FROM Tweets WHERE tweetID=?';
-        db.get(getScoreQuery, [tweetID], (err, result) => {
+    getTweet: function (id, callback) {
+        const getTweetQuery = 'SELECT * FROM Tweets WHERE id=?';
+        db.get(getTweetQuery, [id], (err, result) => {
             if (err) {
                 callback(err);
             } else {
@@ -86,9 +86,9 @@ module.exports = {
             }
         });
     },
-    search: function (time, limit, callback) {
-        const getScoreQuery = 'SELECT * FROM Tweets WHERE time<? LIMIT ?';
-        db.get(getScoreQuery, [time.limit], (err, result) => {
+    search: function (timestamp, limit, callback) {
+        const searchQuery = 'SELECT * FROM Tweets WHERE timestamp<=? ORDER BY timestamp DESC LIMIT ?';
+        db.all(searchQuery, [timestamp,limit], (err, result) => {
             if (err) {
                 callback(err);
             } else {
