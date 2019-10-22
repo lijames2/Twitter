@@ -24,7 +24,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 app.get('/', function (req, res) {
     if (req.session.loggedin) {
-        res.redirect('/logout');
+        res.redirect('/twitter');
     } else {
         res.sendFile(__dirname + "/" + "index.html");
     }
@@ -44,9 +44,9 @@ app.get('/verify', function(req, res) {
 
 app.get('/logout', function (req, res) {
     if (!req.session.loggedin) {
-        res.redirect('/ttt');
+        res.redirect('/');
     } else {
-        res.sendFile(__dirname + "/" + "logout.html");
+        res.sendFile(__dirname + "/" + "twitter.html");
     }
 })
 
