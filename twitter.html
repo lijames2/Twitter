@@ -28,6 +28,10 @@
             $form.submit();
         }
 
+        function emptyList(){
+            $('#tweetcolumn').empty();
+        }
+
         function populateTweets() { //fix for reseting sockets
             fetch("/search", {
                     method: "POST",
@@ -90,6 +94,32 @@
                 }
             });
         }
+
+        function search() {
+            emptyList();
+            let timestamp = $('#time').val();
+            let limit = $('#limit').val();
+            var data = {
+                timestamp: timestamp,
+                limit: limit
+            }
+            fetch("/search", {
+                method: "POST",
+                headers: {
+                    'Accept': 'application/json, text/plain, */*',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            }).then(res => res.json())
+                .then(data => {
+                    console.log(data);
+                    data.items.forEach(item => {
+                        addTweet(item);
+                    });
+                }).catch(err => {
+                    console.error('Error: ', err);
+                });
+        }
     </script>
     <link rel="stylesheet" type="text/css" href="/css/twitter_html.css">
 </head>
@@ -113,19 +143,25 @@
 
             <div class="navbar-end">
                 <div class="navbar-item">
-                    <form action="/search/" method="POST" style="margin-block-end: 0px">
-                        <div class="field has-addons twitter-control">
-                            <div class="control">
-                                <input class="input twitter-input" type="text" placeholder="Search Yeeter...">
-                            </div>
-                            <div class="control">
-                                <button type="submit" style="background: none; padding: 0px; border: none;">
+                    <!--<form action="/search/" method="POST" style="margin-block-end: 0px">-->
+                    <div class="field has-addons twitter-control">
+                        <div class="control">
+                            <input name="timestamp" id="time" class="input twitter-input" type="text"
+                                placeholder="Input epoch time">
+                        </div>
+                        <div class="control">
+                            <input name="limit" id="limit" class="input twitter-input" type="text"
+                                placeholder="Input query limit">
+                        </div>
+                        <div class="control">
+                            <!--<button type="submit" style="background: none; padding: 0px; border: none;">
                                     <i class="fas fa-search button twitter-icon"
                                         style="font-size: 12px; color: #14171a; padding-top: 7px"></i>
-                                </button>
-                            </div>
+                                </button>-->
+                            <input value="search" type="submit" id="searchBtn" onclick="search();">
                         </div>
-                    </form>
+                    </div>
+                    <!--</form>-->
                 </div>
                 <div class="navbar-item">
                     <div>

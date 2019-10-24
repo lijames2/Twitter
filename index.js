@@ -257,7 +257,7 @@ app.get('/item/:id', function (req, res) {
 })
 
 app.post('/search', function (req, res) {
-    //console.log(req.body);
+    console.log(req.body);
     let timestamp = Math.floor((new Date()).getTime() / 1000);
     if (req.body.timestamp) {
         timestamp = Math.floor(req.body.timestamp);
