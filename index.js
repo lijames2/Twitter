@@ -8,6 +8,9 @@ var path = require('path');
 var urlencodedParser = bodyParser.urlencoded({ extended: true })
 const db = require('./db.js');
 const nodemailer = require('nodemailer');
+var cookieParser = require('cookie-parser');
+
+app.use(cookieParser());
 
 app.use(session({
     key: 'user_sid',
@@ -24,7 +27,8 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 app.get('/', function (req, res) {
     if (req.session.loggedin) {
-        res.redirect('/twitter');
+        //res.redirect('/twitter');
+        res.sendFile(__dirname + "/" + "twitter.html");
     } else {
         res.sendFile(__dirname + "/" + "index.html");
     }
@@ -115,29 +119,28 @@ app.post('/verify', function (req, res) {
         }
     });
 })
-
-app.post('/login', function (req, res) {
+//API
+app.post('/login/', function (req, res) {
     var username = req.body.username;
     var password = req.body.password;
-
+    //console.log(req);
+    console.log(req.body);
+    console.log('login request: username:' + username + password);
     db.login(username, password, (err, result) => {
         if (err) {
-            res.status(400).send({
+            res.status(500).send({
                 success: false
             });
         }
         else if (result == 1) {
             req.session.loggedin = true;
             req.session.username = username;
-            // res.status(200).send({
-            //     status: "OK",
-            //     error: ""
-            // });
-            res.status(200);
-            res.redirect('/logout');
+            res.status(200).send({
+                status: "OK",
+                error: ""
+            });
         }
         else {
-            console.log("OMG");
             res.status(500).send({
                 status: "error",
                 error: "error"
@@ -145,7 +148,29 @@ app.post('/login', function (req, res) {
         }
     });
 })
+/*
+//Actual Page
+app.post('/signin', function (req, res) {
+    var username = req.body.username;
+    var password = req.body.password;
 
+    db.login(username, password, (err, result) => {
+        if (err) {
+            res.redirect('/');
+        }
+        else if (result == 1) {
+            req.session.loggedin = true;
+            req.session.username = username;
+            res.status(200);
+            res.redirect('/logout');
+        }
+        else {
+            req.session.wrong = true;
+            res.redirect('/');
+        }
+    });
+})
+*/
 app.post('/logout', function (req, res) {
     if (req.session.loggedin) {
         res.clearCookie('user_sid');
@@ -193,13 +218,13 @@ app.post('/additem', function (req, res) {
                 });
             }
             else if (result == 1) {
-                // res.status(200).send({
-                //     status: "OK",
-                //     id: id,
-                //     error: ""
-                // });
-                res.status(200);
-                res.redirect('/logout');
+                res.status(200).send({
+                    status: "OK",
+                    id: id,
+                    error: ""
+                });
+                //res.status(200);
+                //res.redirect('/logout');
             }
             else {
                 res.status(500).send({
@@ -232,7 +257,7 @@ app.get('/item/:id', function (req, res) {
 })
 
 app.post('/search', function (req, res) {
-    console.log(req.body);
+    //console.log(req.body);
     let timestamp = Math.floor((new Date()).getTime() / 1000);
     if (req.body.timestamp) {
         timestamp = Math.floor(req.body.timestamp);
@@ -244,7 +269,7 @@ app.post('/search', function (req, res) {
             limit = 25;
         }
     }
-    console.log(limit);
+    //console.log(limit);
     db.search(timestamp, limit, (err, result) => {
         if (err) {
             res.status(500).send({

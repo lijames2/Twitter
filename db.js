@@ -42,7 +42,7 @@ module.exports = {
     login: function (username, password, callback) {
         const loginQuery = 'SELECT password, verified FROM User WHERE username = ?';
         db.get(loginQuery, [username], (err, row) => {
-            if (err) {
+            if (err || !row) {
                 callback(null, 0); //username not found
             }
             else {

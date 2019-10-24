@@ -50,3 +50,8 @@ html, body {
 .login-btn {
     margin-top: 15px;
 }
+
+.wronglogin {
+    color: red;
+    display:none;
+}
