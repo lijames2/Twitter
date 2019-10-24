@@ -137,6 +137,7 @@ app.post('/login', function (req, res) {
             res.redirect('/logout');
         }
         else {
+            console.log("OMG");
             res.status(500).send({
                 status: "error",
                 error: "error"
@@ -192,11 +193,13 @@ app.post('/additem', function (req, res) {
                 });
             }
             else if (result == 1) {
-                res.status(200).send({
-                    status: "OK",
-                    id: id,
-                    error: ""
-                });
+                // res.status(200).send({
+                //     status: "OK",
+                //     id: id,
+                //     error: ""
+                // });
+                res.status(200);
+                res.redirect('/logout');
             }
             else {
                 res.status(500).send({
