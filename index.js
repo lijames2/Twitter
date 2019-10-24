@@ -85,9 +85,11 @@ app.post('/adduser', urlencodedParser, function (req, res) {
                 }).catch(function (error) {
 
                 });
-            res.status(200).send({
-                status: "OK"
-            });
+            // res.status(200).send({
+            //     status: "OK"
+            // });
+            res.status(200);
+            res.redirect('/');
         }
     });
 })
@@ -98,10 +100,12 @@ app.post('/verify', function (req, res) {
 
     db.verify(email, key, (err, result) => {
         if (result == 1) {
-            res.status(200).send({
-                status: "OK",
-                error: ""
-            });
+            // res.status(200).send({
+            //     status: "OK",
+            //     error: ""
+            // });
+            res.status(200);
+            res.redirect('/');
         }
         else {
             res.status(500).send({
@@ -125,10 +129,12 @@ app.post('/login', function (req, res) {
         else if (result == 1) {
             req.session.loggedin = true;
             req.session.username = username;
-            res.status(200).send({
-                status: "OK",
-                error: ""
-            });
+            // res.status(200).send({
+            //     status: "OK",
+            //     error: ""
+            // });
+            res.status(200);
+            res.redirect('/logout');
         }
         else {
             res.status(500).send({
@@ -142,10 +148,12 @@ app.post('/login', function (req, res) {
 app.post('/logout', function (req, res) {
     if (req.session.loggedin) {
         res.clearCookie('user_sid');
-        res.status(200).send({
-            status: "OK",
-            error: ""
-        });
+        // res.status(200).send({
+        //     status: "OK",
+        //     error: ""
+        // });
+        res.status(200);
+        res.redirect('/');
     } else {
         res.status(500).send({
             status: "error",
