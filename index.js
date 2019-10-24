@@ -50,22 +50,6 @@ app.get('/logout', function (req, res) {
     }
 })
 
-// app.post('/ttt', urlencodedParser, function (req, res) {
-//     response = {
-//         name: req.body.name
-//     };
-//     var fileContent = fs.readFileSync(__dirname + "/" + "grid.html", 'utf8');
-//     var today = new Date();
-//     var dd = String(today.getDate()).padStart(2, '0');
-//     var mm = String(today.getMonth() + 1).padStart(2, '0');
-//     var yyyy = today.getFullYear();
-//     today = mm + '/' + dd + '/' + yyyy;
-
-//     fileContent = fileContent.replace("<h2 id='name'>Test</h2>", "<h2 id='name'>Welcome: " + response.name + ", today is " + today + "!</h2>")
-//     res.write(fileContent);
-//     res.end();
-// })
-
 app.post('/adduser', urlencodedParser, function (req, res) {
     var username = req.body.username;
     var password = req.body.password;
@@ -171,8 +155,6 @@ app.post('/logout', function (req, res) {
 })
 
 app.post('/additem', function (req, res) {
-    //var tweet = req.body.content;
-    //var childType = req.body.childType;
     if (!req.session.loggedin) {
         res.status(500).send({
             status: "error",
