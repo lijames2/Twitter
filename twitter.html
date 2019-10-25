@@ -28,7 +28,7 @@
             $form.submit();
         }
 
-        function emptyList(){
+        function emptyList() {
             $('#tweetcolumn').empty();
         }
 
@@ -58,6 +58,7 @@
                     <div class="tweet-header">
                         <strong>${tweet.username}</strong> <span style="color: #657786">@${tweet.username}</span> <span
                             class="tweet-time" style="color: #657786"> ${new Date(tweet.timestamp*1000)}</span>
+                            <strong>ID : ${tweet.id}</strong>
                     </div>
                     <div class="tweet-content">
                         ${tweet.content}
@@ -78,21 +79,21 @@
                 content: content
             }
             fetch("/additem", {
-                method: "POST",
-                headers: {
-                    'Accept': 'application/json, text/plain, */*',
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(data)
-            }).then(res => {
-                console.log("res", res);
-                if (res.status === 200) {
-                    redirect({
-                        url: "/",
-                        method: "get"
-                    });
-                }
-            });
+                    method: "POST",
+                    headers: {
+                        'Accept': 'application/json, text/plain, */*',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                }).then(res => res.json())
+                .then(data => {
+                    console.log(data);
+                    emptyList();
+                    populateTweets();
+                    getItemToModal(data.id);
+                }).catch(err => {
+                    console.error('Error: ', err);
+                });
         }
 
         function search() {
@@ -104,18 +105,39 @@
                 limit: limit
             }
             fetch("/search", {
-                method: "POST",
-                headers: {
-                    'Accept': 'application/json, text/plain, */*',
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(data)
-            }).then(res => res.json())
+                    method: "POST",
+                    headers: {
+                        'Accept': 'application/json, text/plain, */*',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                }).then(res => res.json())
                 .then(data => {
                     console.log(data);
                     data.items.forEach(item => {
                         addTweet(item);
                     });
+                }).catch(err => {
+                    console.error('Error: ', err);
+                });
+        }
+
+        function getItemToModal(itemID) {
+            fetch(`/item/${itemID}`, {
+                    method: "GET"
+                }).then(res => res.json())
+                .then(data => {
+                    console.log(data);
+                    let item = data.item;
+                    $('#modalUsername').text(item.username);
+                    $('#modalHandle').text('@' + item.content);
+                    $('#modalID').text('ID : ' + item.id);
+                    $('#modalContent').text(item.content);
+                    //$('#modalreplies').text(item.username);
+                    $('#modalretweets').text(item.retweeted);
+                    $('#modallikes').text(item.likes);
+                    $('#itemModal').show();
+
                 }).catch(err => {
                     console.error('Error: ', err);
                 });
@@ -128,7 +150,7 @@
     <nav class="navbar twitter-nav" role="navigation" aria-label="main navigation">
         <div class="navbar-brand" style="border-bottom: 1px solid rgba(0,0,0,0.25);">
             <a class="navbar-item" href="/">
-                    <i class="fab fa-twitter fa-lg" style="color:#1da1f2; margin-left: 20px"></i>
+                <i class="fab fa-twitter fa-lg" style="color:#1da1f2; margin-left: 20px"></i>
             </a>
             <a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false"
                 data-target="navbarBasicExample">
@@ -172,6 +194,29 @@
             </div>
         </div>
     </nav>
+
+    <div id="itemModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="getElementById('itemModal').style.display = 'none';">&times;</span>
+            <div class="tweet-header">
+                <strong id='modalUsername'></strong> <span style="color: #657786" id='modalHandle'></span> <span
+                    class="tweet-time" style="color: #657786" id='modalTime'></span>
+                    <strong id='modalID'></strong>
+            </div>
+            <div id='modalContent' class="tweet-content">
+            </div>
+            <div class="tweet-footer">
+                <i class="fas fa-reply" style="padding-right: 10px;"> </i>
+                <p id='modalreplies'>0</p>
+                <i class="fas fa-retweet" style="padding-left: 20px; padding-right: 10px;"></i>
+                <p id='modalretweets'>0</p>
+                <i class="fa fa-heart" style="padding-left: 20px; padding-right: 10px;"></i>
+                <p id='modallikes'>0</p>
+            </div>
+        </div>
+    </div>
+
+
     <div class="container twitter-wrapper">
         <div class="tweet columns">
             <div class="column is-1 tweet-user">

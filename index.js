@@ -148,29 +148,7 @@ app.post('/login/', function (req, res) {
         }
     });
 })
-/*
-//Actual Page
-app.post('/signin', function (req, res) {
-    var username = req.body.username;
-    var password = req.body.password;
 
-    db.login(username, password, (err, result) => {
-        if (err) {
-            res.redirect('/');
-        }
-        else if (result == 1) {
-            req.session.loggedin = true;
-            req.session.username = username;
-            res.status(200);
-            res.redirect('/logout');
-        }
-        else {
-            req.session.wrong = true;
-            res.redirect('/');
-        }
-    });
-})
-*/
 app.post('/logout', function (req, res) {
     if (req.session.loggedin) {
         res.clearCookie('user_sid');
