@@ -89,11 +89,11 @@ app.post('/adduser', urlencodedParser, function (req, res) {
                 }).catch(function (error) {
 
                 });
-            // res.status(200).send({
-            //     status: "OK"
-            // });
-            res.status(200);
-            res.redirect('/');
+            res.status(200).send({
+                status: "OK"
+            });
+            // res.status(200);
+            // res.redirect('/');
         }
     });
 })
