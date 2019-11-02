@@ -31,7 +31,7 @@
         function emptyList() {
             $('#tweetcolumn').empty();
         }
-
+        
         function populateTweets() { //fix for reseting sockets
             fetch("/search", {
                     method: "POST",
