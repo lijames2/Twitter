@@ -90,7 +90,8 @@ app.post('/adduser', urlencodedParser, function (req, res) {
 
                 });
             res.status(200).send({
-                status: "OK"
+                status: "OK",
+                error: ""
             });
             // res.status(200);
             // res.redirect('/');
