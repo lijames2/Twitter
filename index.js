@@ -62,8 +62,9 @@ app.post('/adduser', urlencodedParser, function (req, res) {
 
     db.addUser(username, password, email, key, (err, result) => {
         if (err) {
-            res.status(400).send({
-                success: false
+            res.status(500).send({
+                status: "error",
+                error: ""
             });
         }
         else {
@@ -105,12 +106,12 @@ app.post('/verify', function (req, res) {
 
     db.verify(email, key, (err, result) => {
         if (result == 1) {
-            // res.status(200).send({
-            //     status: "OK",
-            //     error: ""
-            // });
-            res.status(200);
-            res.redirect('/');
+            res.status(200).send({
+                status: "OK",
+                error: ""
+            });
+            // res.status(200);
+            // res.redirect('/');
         }
         else {
             res.status(500).send({
@@ -121,10 +122,9 @@ app.post('/verify', function (req, res) {
     });
 })
 //API
-app.post('/login/', function (req, res) {
+app.post('/login', function (req, res) {
     var username = req.body.username;
     var password = req.body.password;
-    //console.log(req);
     console.log(req.body);
     console.log('login request: username:' + username + password);
     db.login(username, password, (err, result) => {
@@ -153,12 +153,12 @@ app.post('/login/', function (req, res) {
 app.post('/logout', function (req, res) {
     if (req.session.loggedin) {
         res.clearCookie('user_sid');
-        // res.status(200).send({
-        //     status: "OK",
-        //     error: ""
-        // });
-        res.status(200);
-        res.redirect('/');
+        res.status(200).send({
+            status: "OK",
+            error: ""
+        });
+        // res.status(200);
+        // res.redirect('/');
     } else {
         res.status(500).send({
             status: "error",
@@ -218,7 +218,6 @@ app.post('/additem', function (req, res) {
 
 app.get('/item/:id', function (req, res) {
     let id = parseInt(req.params.id);
-    console.log(id);
     db.getTweet(id, (err, result) => {
         if (err) {
             res.status(500).send({
@@ -233,6 +232,24 @@ app.get('/item/:id', function (req, res) {
             })
         }
     })
+})
+
+app.delete('/item/:id', function (req, res){
+    let id = parseInt(req.params.id);
+    console.log(id);
+    db.deleteTweet(id, (err, result) => {
+        if (err) {
+            res.status(500).send({
+                status: "error",
+                error: err
+            });
+        } else {
+            res.status(200).send({
+                status: "OK",
+                error: null
+            })
+        }
+    });
 })
 
 app.post('/search', function (req, res) {
@@ -265,23 +282,54 @@ app.post('/search', function (req, res) {
     })
 })
 
-
-app.post('/getscore', function (req, res) {
-    db.getScore(req.session.username, (err, result) => {
+app.get('/user/:username', function (req, res) {
+    let username = req.params.username;
+    console.log(username);
+    db.getProfile(username, (err, result) => {
         if (err) {
             res.status(500).send({
-                error: "ERROR"
+                status: "error",
+                error: err
             });
         } else {
-            res.status(200).send({
-                status: "OK",
-                human: result.human,
-                wopr: result.wopr,
-                tie: result.tie
+            let email = result.email;
+            let followers = [];
+            let following = [];
+            db.getFollowers(username, (err, result) => {
+                if (err) {
+                    res.status(500).send({
+                        status: "error",
+                        error: err
+                    });
+                } else {
+                    result.forEach(follower => {
+                        followers.push(follower.Follower)
+                    });
+                    db.getFollowing(username, (err, result) => {
+                        if (err) {
+                            res.status(500).send({
+                                status: "error",
+                                error: err
+                            });
+                        } else {
+                            result.forEach(user => {
+                                following.push(user.User)
+                            });
+                            res.status(200).send({
+                                status: "OK",
+                                user: {
+                                    email: email,
+                                    followers: followers.length,
+                                    following: following.length
+                                }
+                            })
+                        }
+                    })
+                }
             })
         }
     })
-});
+})
 
 var server = app.listen(80, function () {
     var host = server.address().address
