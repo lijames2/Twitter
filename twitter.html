@@ -127,6 +127,10 @@
             getItemToModal($('#searchID').val());
         }
 
+        function deleteTweet(){
+            deleteItemToModal($('#deleteID').val());
+        }
+
         function getItemToModal(itemID) {
             fetch(`/item/${itemID}`, {
                     method: "GET"
@@ -147,6 +151,19 @@
                     console.error('Error: ', err);
                 });
         }
+
+        function deleteItemToModal(itemID) {
+            fetch(`/item/${itemID}`, {
+                    method: "DELETE"
+                }).then(res => res.json())
+                .then(data => {
+                    $('#itemModal').show();
+
+                }).catch(err => {
+                    console.error('Error: ', err);
+                });
+        }
+
     </script>
     <link rel="stylesheet" type="text/css" href="/css/twitter_html.css">
 </head>
@@ -172,6 +189,19 @@
                     </div>
                 </div>
             </div>
+
+            <div class="navbar-item">
+                <div class="field has-addons twitter-control">
+                    <div class="control">
+                        <input name="id" id="deleteID" class="input twitter-input" type="text"
+                            placeholder="Input tweet id">
+                    </div>
+                    <div class="control">
+                        <input value="Delete Tweet By ID" type="submit" id="searchidbtn" onclick="deleteTweet();">
+                    </div>
+                </div>
+            </div>
+
             <div class="navbar-end">
                 <div class="navbar-item">
                     <div class="field has-addons twitter-control">
