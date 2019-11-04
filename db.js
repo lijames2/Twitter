@@ -86,6 +86,16 @@ module.exports = {
             }
         });
     },
+    deleteTweet: function (id, callback) {
+        const deleteTweetQuery = 'DELETE FROM Tweets WHERE id=?';
+        db.get(deleteTweetQuery, [id], (err, result) => {
+            if (err) {
+                callback(err);
+            } else {
+                callback(null, result);
+            }
+        });
+    },
     search: function (timestamp, limit, callback) {
         const searchQuery = 'SELECT * FROM Tweets WHERE timestamp<=? ORDER BY timestamp DESC LIMIT ?';
         db.all(searchQuery, [timestamp,limit], (err, result) => {
