@@ -62,8 +62,9 @@ app.post('/adduser', urlencodedParser, function (req, res) {
 
     db.addUser(username, password, email, key, (err, result) => {
         if (err) {
-            res.status(400).send({
-                success: false
+            res.status(500).send({
+                status: "error",
+                error: ""
             });
         }
         else {
