@@ -1,10 +1,22 @@
 .twitter-control {
     background: #f5f8fa;
+    
+}
+
+.link-button { 
+    background: none;
+    border: none;
+    color: #1c94e0;
+    cursor: pointer; 
+    padding: 1px;
+    line-height: 1.5rem;
 }
 
 html,
 body {
     font-family: "Segoe UI", Arial, sans-serif;
+    height: 100vh;
+    overflow: hidden;
 }
 
 .twitter-btn {
@@ -36,14 +48,20 @@ body {
 }
 
 .twitter-wrapper {
-    margin-top: 50px;
-    width: 70%;
+    margin: 8px;
+    padding: 0px 20px 0px 20px;
+    width: 100%;
+    background: white;
+    overflow: hidden;
 }
 
 .tweet {
     font-size: 14px;
     background: #fff;
-    border-bottom: rgb(201, 201, 201) 2px solid;
+}
+
+.link-button::before {
+    content: "\00b7";
 }
 
 .tweet-time::before {
@@ -66,9 +84,13 @@ body {
     resize: none;
     border: none;
     background: rgb(230, 236, 240);
-    border-radius: 5px;
-    padding: 15px;
-    width: 100%;
+    padding: 8px;
+    width: 90%;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    border-radius: 4px;
+    border: #657786 1px solid;
 }
 
 .tweet-user {
@@ -77,10 +99,8 @@ body {
 
 .tweet-compose {
     padding-top: 15px;
-    border-radius: 5px;
-    margin-top: 20px;
-    background: #54B3EA !important;
-    box-shadow: 0 8px 6px -6px rgb(66, 66, 66);
+    width: 100%;
+    background: #8dc0da !important;
     font-family: 'Roboto', sans-serif !important;
 }
 
@@ -92,7 +112,6 @@ body {
 
 .tweet-compose-btn {
     float: right;
-    margin-top: 10px;
     background: #248CD0;
     border: none;
     border-radius: 20px;
@@ -100,6 +119,9 @@ body {
     font-weight: bold;
     font-size: 13px;
     width: 60px;
+    margin-top: 8px;
+    margin-right: 15px;
+    margin-bottom: 8px;
 }
 
 .tweet-compose-btn:hover {
@@ -125,7 +147,7 @@ body {
     margin: auto;
     padding: 20px;
     border: 1px solid #888;
-    width: 80%;
+    width: 95%;
 }
 
 .close {
@@ -140,4 +162,194 @@ body {
     color: #000;
     text-decoration: none;
     cursor: pointer;
+}
+
+.content-wrapper {
+    min-height: 90vh;
+    padding: 15px;
+    background-image: url('../images/cheap_diagonal_fabric.png');
+}
+
+.profile-modal {
+    background: white;
+    flex-grow: 0;
+    border-radius: 4px !important;
+}
+
+.tile-content {
+}
+
+.side-modals {
+    padding: 8px 0px;
+    margin-left: 5px;
+    min-width: 350px;
+}
+
+.tile.is-vertical > .tile.is-child:not(:last-child) {
+    margin-bottom: 8px !important;
+}
+
+.profile-info {
+    color: #54B3EA;
+}
+
+.profile-header {
+    background-image: url('../images/sbu.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    text-align: center;
+    padding: 20px;
+}
+
+.profile-title {
+    color: white;
+    font-weight: bolder;
+    font-size: 20px;
+}
+
+.profile-subtitle {
+    color: white;
+    font-size: 15px;
+}
+
+.is-vertical-center {
+    align-items: center;
+  }
+
+  .tab {
+    overflow: hidden;
+    background: white;
+    padding: 2px;
+  }
+  
+  /* Style the buttons that are used to open the tab content */
+  .tab button {
+    background-color: inherit;
+    float: left;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    padding: 14px 16px;
+    margin-right: 15px;
+    color: #657786;
+    font-size: 15px;
+    font-weight: bold;
+    text-transform: uppercase;
+  }
+  
+  /* Change background color of buttons on hover */
+  .tab button:hover {
+    border-bottom: #54B3EA 1.5px solid;
+  }
+  
+  /* Create an active/current tablink class */
+  .tab button.active {
+    border-bottom: #1c94e0 2px solid;
+  }
+  
+  /* Style the tab content */
+  .tabcontent {
+    display: none;
+    padding: 2px;
+    border-top: none;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    height: 86.5vh;
+    margin-top: 1px;
+  }
+
+  ::-webkit-scrollbar {
+    width: 8px;
+}
+ 
+/* Track */
+::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3); 
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+}
+ 
+/* Handle */
+::-webkit-scrollbar-thumb {
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+    background: #888;
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5); 
+}
+::-webkit-scrollbar-thumb:window-inactive {
+	background: #888;
+}
+
+.rec-modal {
+    background: white;
+    padding: 15px;
+}
+
+.rec-title {
+    color: #657786;
+
+}
+
+.rec-follow {
+    margin-top: 10px;
+    padding: 0px 4px;
+    overflow: hidden;
+}
+
+.rec-img {
+    border-radius: 5px;
+    width: 50px;
+    height: 50px;
+}
+
+.rec-title2 {
+    font-size: 12px;
+    color: black;
+    font-weight: bold;
+    float: left;
+    margin-right: 5px;
+}
+
+.rec-verified {
+    height: 20px;
+    width: 20px;
+    margin-right: 5px;
+    float: left;
+}
+
+.rec-at {
+    color: #657786;
+    font-size: 12px;
+    float: left;
+}
+
+.rec-btns {
+    clear: both;
+}
+
+.rec-container {
+    overflow: ellipse;
+}
+
+.rec-btn {
+    color: #54B3EA;
+}
+
+.rec-btn-text {
+    font-weight: bold;
+}
+
+.rec-btn-wrapper {
+    margin-top: 5px;
+    float: left;
+}
+
+.rec-promoted {
+    float: left;
+    margin-top: 5px;
+    margin-left: 20px;
+}
+
+.tag {
+    height: 2.25em !important;
 }
