@@ -265,23 +265,54 @@ app.post('/search', function (req, res) {
     })
 })
 
-
-app.post('/getscore', function (req, res) {
-    db.getScore(req.session.username, (err, result) => {
+app.get('/user/:username', function (req, res) {
+    let username = req.params.username;
+    console.log(username);
+    db.getProfile(username, (err, result) => {
         if (err) {
             res.status(500).send({
-                error: "ERROR"
+                status: "error",
+                error: err
             });
         } else {
-            res.status(200).send({
-                status: "OK",
-                human: result.human,
-                wopr: result.wopr,
-                tie: result.tie
+            let email = result.email;
+            let followers = [];
+            let following = [];
+            db.getFollowers(username, (err, result) => {
+                if (err) {
+                    res.status(500).send({
+                        status: "error",
+                        error: err
+                    });
+                } else {
+                    result.forEach(follower => {
+                        followers.push(follower.Follower)
+                    });
+                    db.getFollowing(username, (err, result) => {
+                        if (err) {
+                            res.status(500).send({
+                                status: "error",
+                                error: err
+                            });
+                        } else {
+                            result.forEach(user => {
+                                following.push(user.User)
+                            });
+                            res.status(200).send({
+                                status: "OK",
+                                user: {
+                                    email: email,
+                                    followers: followers.length,
+                                    following: following.length
+                                }
+                            })
+                        }
+                    })
+                }
             })
         }
     })
-});
+})
 
 var server = app.listen(80, function () {
     var host = server.address().address
