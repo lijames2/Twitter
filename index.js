@@ -94,7 +94,6 @@ app.post('/adduser', urlencodedParser, function (req, res) {
                 status: "OK",
                 error: ""
             });
-            // res.redirect('/');
             // res.status(200);
             // res.redirect('/');
         }
@@ -107,12 +106,12 @@ app.post('/verify', function (req, res) {
 
     db.verify(email, key, (err, result) => {
         if (result == 1) {
-            // res.status(200).send({
-            //     status: "OK",
-            //     error: ""
-            // });
-            res.status(200);
-            res.redirect('/');
+            res.status(200).send({
+                status: "OK",
+                error: ""
+            });
+            // res.status(200);
+            // res.redirect('/');
         }
         else {
             res.status(500).send({
@@ -123,10 +122,9 @@ app.post('/verify', function (req, res) {
     });
 })
 //API
-app.post('/login/', function (req, res) {
+app.post('/login', function (req, res) {
     var username = req.body.username;
     var password = req.body.password;
-    //console.log(req);
     console.log(req.body);
     console.log('login request: username:' + username + password);
     db.login(username, password, (err, result) => {
@@ -155,12 +153,12 @@ app.post('/login/', function (req, res) {
 app.post('/logout', function (req, res) {
     if (req.session.loggedin) {
         res.clearCookie('user_sid');
-        // res.status(200).send({
-        //     status: "OK",
-        //     error: ""
-        // });
-        res.status(200);
-        res.redirect('/');
+        res.status(200).send({
+            status: "OK",
+            error: ""
+        });
+        // res.status(200);
+        // res.redirect('/');
     } else {
         res.status(500).send({
             status: "error",
