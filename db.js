@@ -105,5 +105,35 @@ module.exports = {
                 callback(null, result);
             }
         });
+    },
+    getProfile: function (username, callback) {
+        const getProfileQuery = 'SELECT * FROM User WHERE username=?';
+        db.get(getProfileQuery, [username], (err, result) => {
+            if (err) {
+                callback(err);
+            } else {
+                callback(null, result);
+            }
+        });
+    },
+    getFollowers: function (username, callback) {
+        const getFollowersQuery = 'SELECT Follower FROM Follower WHERE User=?';
+        db.all(getFollowersQuery, [username], (err, result) => {
+            if (err) {
+                callback(err);
+            } else {
+                callback(null, result);
+            }
+        });
+    },
+    getFollowing: function (username, callback) {
+        const getFollowingQuery = 'SELECT User FROM Follower WHERE Follower=?';
+        db.all(getFollowingQuery, [username], (err, result) => {
+            if (err) {
+                callback(err);
+            } else {
+                callback(null, result);
+            }
+        });
     }
 };
