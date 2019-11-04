@@ -94,6 +94,7 @@ app.post('/adduser', urlencodedParser, function (req, res) {
                 status: "OK",
                 error: ""
             });
+            // res.redirect('/');
             // res.status(200);
             // res.redirect('/');
         }
