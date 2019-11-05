@@ -174,17 +174,10 @@ app.post('/login', function (req, res) {
 app.post('/logout', function (req, res) {
     if (req.session.loggedin) {
         res.clearCookie('user_sid');
-<<<<<<< HEAD
-        // res.status(200).send({
-        //     status: "OK",
-        //     error: ""
-        // });
-=======
         res.status(200).send({
             status: "OK",
             error: null
         });
->>>>>>> 70e9e680397d3ac367afd1ff6b18f7068ea68fa5
         // res.status(200);
         res.redirect('/');
     } else {
