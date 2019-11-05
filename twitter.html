@@ -151,7 +151,18 @@
                 });
         }
 
-<<<<<<< HEAD
+        function deleteItemToModal(itemID) {
+            fetch(`/item/${itemID}`, {
+                    method: "DELETE"
+                }).then(res => res.json())
+                .then(data => {
+                    $('#itemModal').show();
+
+                }).catch(err => {
+                    console.error('Error: ', err);
+                });
+        }
+
         function tab(evt, cityName) {
             var i, tabcontent, tablinks;
             tabcontent = document.getElementsByClassName("tabcontent");
@@ -169,20 +180,7 @@
             document.getElementById(cityName).style.display = "block";
             evt.currentTarget.className += " active";
         }
-=======
-        function deleteItemToModal(itemID) {
-            fetch(`/item/${itemID}`, {
-                    method: "DELETE"
-                }).then(res => res.json())
-                .then(data => {
-                    $('#itemModal').show();
 
-                }).catch(err => {
-                    console.error('Error: ', err);
-                });
-        }
-
->>>>>>> 54606f92f01f8510f201612b1cd6f4cf77f4ca34
     </script>
     <link rel="stylesheet" type="text/css" href="/css/twitter_html.css">
 </head>
