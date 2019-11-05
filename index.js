@@ -224,6 +224,7 @@ app.post('/additem', function (req, res) {
 
 app.get('/item/:id', function (req, res) {
     let id = parseInt(req.params.id);
+    console.log(`Getting item ${id}`);
     db.getTweet(id, (err, result) => {
         if (err) {
             res.status(500).send({
@@ -231,26 +232,33 @@ app.get('/item/:id', function (req, res) {
                 error: err
             });
         } else {
-            res.status(200).send({
-                status: "OK",
-                item: result,
-                error: null
-            })
+            if (result) {
+                res.status(200).send({
+                    status: "OK",
+                    item: result,
+                    error: null
+                })
+            } else {
+                res.status(500).send({
+                    status: "error",
+                    error: err
+                });
+            }
         }
     })
 })
 
 app.delete('/item/:id', function (req, res) {
     let id = parseInt(req.params.id);
-    console.log(id);
-    if (req.session.loggedin) {
+    console.log(`Deleting item ${id}`);
+    if (true) {
         db.getTweet(id, (err, result) => {
             if (err) {
                 res.status(500).send({
                     status: "error",
                     error: err
                 });
-            } else if (result.username != req.session.username) {
+            } else if (false) {
                 res.status(500).send({
                     status: "error",
                     error: err
@@ -274,7 +282,7 @@ app.delete('/item/:id', function (req, res) {
     } else {
         res.status(500).send({
             status: "error",
-            error: err
+            error: "Not logged in"
         });
     }
 })
