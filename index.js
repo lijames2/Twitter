@@ -34,7 +34,7 @@ app.get('/', function (req, res) {
     res.sendFile(__dirname + "/" + "twitter.html");
 })
 
-app.get('/login', function(req, res) {
+app.get('/login', function (req, res) {
     res.sendFile(__dirname + "/" + "index.html");
 })
 
@@ -155,7 +155,7 @@ app.post('/logout', function (req, res) {
         res.clearCookie('user_sid');
         res.status(200).send({
             status: "OK",
-            error:null
+            error: null
         });
         // res.status(200);
         // res.redirect('/');
@@ -361,7 +361,7 @@ app.get('/user/:username', function (req, res) {
 */
 app.get('/user/:username', function (req, res) {
     let username = req.params.username;
-    console.log(username);
+    console.log(`getting profile of ${username}`);
     db.getProfile(username, (err, result) => {
         if (err) {
             res.status(500).send({
@@ -373,15 +373,23 @@ app.get('/user/:username', function (req, res) {
             //result.forEach(follower => {
             //    followers.push(follower.Follower)
             //});
-            res.status(200).send({
-                status: "OK",
-                user: {
-                    email: result.email,
-                    followers: result.followers,
-                    following: result.followers
-                }
-            })
+            if (result === undefined || result.length == 0) {
+                res.status(500).send({
+                    status: "error",
+                    error: err
+                });
+            } else {
+                res.status(200).send({
+                    status: "OK",
+                    user: {
+                        email: result.email,
+                        followers: result.followers,
+                        following: result.followers
+                    }
+                })
+            }
         }
+    }
     })
 })
 
