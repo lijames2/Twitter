@@ -244,17 +244,31 @@ app.delete('/item/:id', function (req, res) {
     let id = parseInt(req.params.id);
     console.log(id);
     if (req.session.loggedin) {
-        db.deleteTweet(id, (err, result) => {
+        db.getTweet(id, (err, result) => {
             if (err) {
                 res.status(500).send({
                     status: "error",
                     error: err
                 });
+            } else if (result.username != req.session.username) {
+                res.status(500).send({
+                    status: "error",
+                    error: err
+                });
             } else {
-                res.status(200).send({
-                    status: "OK",
-                    error: null
-                })
+                db.deleteTweet(id, (err, result) => {
+                    if (err) {
+                        res.status(500).send({
+                            status: "error",
+                            error: err
+                        });
+                    } else {
+                        res.status(200).send({
+                            status: "OK",
+                            error: null
+                        })
+                    }
+                });
             }
         });
     } else {
@@ -499,7 +513,7 @@ app.get('/user/:username/following', function (req, res) {
 
 app.post('/follow', function (req, res) {
     if (!req.session.loggedin) {
-    //if (false) {
+        //if (false) {
         res.status(500).send({
             status: "error",
             error: "Not logged in"
