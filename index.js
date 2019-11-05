@@ -385,12 +385,13 @@ app.get('/user/:username', function (req, res) {
                     error: err
                 });
             } else {
+                console.log(result);
                 res.status(200).send({
                     status: "OK",
                     user: {
                         email: result.email,
                         followers: result.followers,
-                        following: result.followers
+                        following: result.following
                     }
                 });
             }
