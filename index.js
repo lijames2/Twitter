@@ -259,7 +259,7 @@ app.delete('/item/:id', function (req, res) {
 })
 
 app.post('/search', function (req, res) {
-    console.log(req.body);
+    //console.log(req.body);
     let timestamp = Math.floor((new Date()).getTime() / 1000);
     if (req.body.timestamp) {
         timestamp = Math.floor(req.body.timestamp);
@@ -282,7 +282,7 @@ app.post('/search', function (req, res) {
             if (req.body.following) {
                 let following = [];
                 let filteredResult = [];
-                db.getFollowing(req.session.username, (err, users) => {
+                db.getFollowing(req.session.username, 99999, (err, users) => {
                     if (err) {
                         res.status(500).send({
                             status: "error",
