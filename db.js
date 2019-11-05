@@ -98,7 +98,7 @@ module.exports = {
     },
     search: function (timestamp, limit, callback) {
         const searchQuery = 'SELECT * FROM Tweets WHERE timestamp<=? ORDER BY timestamp DESC LIMIT ?';
-        db.all(searchQuery, [timestamp,limit], (err, result) => {
+        db.all(searchQuery, [timestamp, limit], (err, result) => {
             if (err) {
                 callback(err);
             } else {
@@ -116,9 +116,9 @@ module.exports = {
             }
         });
     },
-    getFollowers: function (username, callback) {
-        const getFollowersQuery = 'SELECT Follower FROM Follower WHERE User=?';
-        db.all(getFollowersQuery, [username], (err, result) => {
+    getFollowers: function (username, limit, callback) {
+        const getFollowersQuery = 'SELECT Follower FROM Follower WHERE User=? LIMIT ?';
+        db.all(getFollowersQuery, [username, limit], (err, result) => {
             if (err) {
                 callback(err);
             } else {
@@ -129,6 +129,16 @@ module.exports = {
     getFollowing: function (username, callback) {
         const getFollowingQuery = 'SELECT User FROM Follower WHERE Follower=?';
         db.all(getFollowingQuery, [username], (err, result) => {
+            if (err) {
+                callback(err);
+            } else {
+                callback(null, result);
+            }
+        });
+    },
+    getTweetsFromUser: function (username, limit, callback) {
+        const getTweetQuery = 'SELECT * FROM Tweets WHERE username=? ORDER BY timestamp DESC LIMIT ?';
+        db.all(getTweetQuery, [username, limit], (err, result) => {
             if (err) {
                 callback(err);
             } else {
