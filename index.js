@@ -490,10 +490,9 @@ app.get('/user/:username/following', function (req, res) {
 })
 
 app.post('/follow', function (req, res) {
-    if (false) {
+    if (!req.session.loggedin) {
         res.status(500).send({
             status: "error",
-            id: "",
             error: err
         });
     }

@@ -200,7 +200,7 @@ module.exports = {
     },
     decrementFollowCounts: function (user, follower, callback) {
         const decrementFollowingQuery = 'UPDATE User SET following=following-1 WHERE username=?';
-        const decrementFollowerQuery = 'UPDATE User SET followers=follower-1 WHERE username=?';
+        const decrementFollowerQuery = 'UPDATE User SET followers=followers-1 WHERE username=?';
         db.run(decrementFollowingQuery, [follower], (err, result) => {
             if (err) {
                 callback(err);
