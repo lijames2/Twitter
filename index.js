@@ -279,10 +279,10 @@ app.post('/search', function (req, res) {
                 error: err
             });
         } else {
-            if (req.body.following) {
+            if (typeof req.body.following === 'undefined' || req.body.following) {
                 let following = [];
                 let filteredResult = [];
-                db.getFollowing(req.session.username, 99999, (err, users) => {
+                db.getFollowing('irRix0KyUi', 99999, (err, users) => {
                     if (err) {
                         res.status(500).send({
                             status: "error",
