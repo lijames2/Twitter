@@ -262,7 +262,7 @@ app.post('/search', function (req, res) {
     if (req.body.limit) {
         limit = req.body.limit;
         if (req.body.limit > 100 || req.body.limit < 0) {
-            limit = 25;
+            limit = 100;
         }
     }
     //console.log(limit);
@@ -399,7 +399,7 @@ app.get('/user/:username/posts', function (req, res) {
     if (req.body.limit) {
         limit = req.body.limit;
         if (req.body.limit > 200 || req.body.limit < 0) {
-            limit = 50;
+            limit = 200;
         }
     }
     db.getTweetsFromUser(username, limit, (err, result) => {
@@ -429,7 +429,7 @@ app.get('/user/:username/followers', function (req, res) {
     if (req.body.limit) {
         limit = req.body.limit;
         if (req.body.limit > 200 || req.body.limit < 0) {
-            limit = 50;
+            limit = 200;
         }
     }
     let followers = [];
@@ -459,7 +459,7 @@ app.get('/user/:username/following', function (req, res) {
     if (req.body.limit) {
         limit = req.body.limit;
         if (req.body.limit > 200 || req.body.limit < 0) {
-            limit = 50;
+            limit = 200;
         }
     }
     let following = [];
