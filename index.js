@@ -26,17 +26,17 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.get('/', function (req, res) {
-    if (req.session.loggedin) {
-        //res.redirect('/twitter');
-        res.sendFile(__dirname + "/" + "twitter.html");
-    } else {
-        res.sendFile(__dirname + "/" + "index.html");
-    }
+    // if (req.session.loggedin) {
+    //     res.sendFile(__dirname + "/" + "twitter.html");
+    // } else {
+    //     res.sendFile(__dirname + "/" + "index.html");
+    // }
+    res.sendFile(__dirname + "/" + "twitter.html");
 })
 
-// app.get('/login', function(req, res) {
-//     res.sendFile(__dirname + "/" + "index.html");
-// })
+app.get('/login', function(req, res) {
+    res.sendFile(__dirname + "/" + "index.html");
+})
 
 app.get('/signup', function (req, res) {
     res.sendFile(__dirname + "/" + "signup.html");
@@ -64,7 +64,7 @@ app.post('/adduser', urlencodedParser, function (req, res) {
         if (err) {
             res.status(500).send({
                 status: "error",
-                error: ""
+                error: err
             });
         }
         else {
@@ -92,7 +92,7 @@ app.post('/adduser', urlencodedParser, function (req, res) {
                 });
             res.status(200).send({
                 status: "OK",
-                error: ""
+                error: null
             });
             // res.status(200);
             // res.redirect('/');
@@ -108,7 +108,7 @@ app.post('/verify', function (req, res) {
         if (result == 1) {
             res.status(200).send({
                 status: "OK",
-                error: ""
+                error: null
             });
             // res.status(200);
             // res.redirect('/');
@@ -116,7 +116,7 @@ app.post('/verify', function (req, res) {
         else {
             res.status(500).send({
                 status: "error",
-                error: "error"
+                error: err
             });
         }
     });
@@ -138,13 +138,13 @@ app.post('/login', function (req, res) {
             req.session.username = username;
             res.status(200).send({
                 status: "OK",
-                error: ""
+                error: null
             });
         }
         else {
             res.status(500).send({
                 status: "error",
-                error: "error"
+                error: err
             });
         }
     });
@@ -155,14 +155,14 @@ app.post('/logout', function (req, res) {
         res.clearCookie('user_sid');
         res.status(200).send({
             status: "OK",
-            error: ""
+            error:null
         });
         // res.status(200);
         // res.redirect('/');
     } else {
         res.status(500).send({
             status: "error",
-            error: "error"
+            error: err
         });
     }
 })
@@ -172,7 +172,7 @@ app.post('/additem', function (req, res) {
         res.status(500).send({
             status: "error",
             id: "",
-            error: "error"
+            error: err
         });
     }
     else {
@@ -193,14 +193,14 @@ app.post('/additem', function (req, res) {
                 res.status(500).send({
                     status: "error",
                     id: id,
-                    error: "error"
+                    error: err
                 });
             }
             else if (result == 1) {
                 res.status(200).send({
                     status: "OK",
                     id: id,
-                    error: ""
+                    error: null
                 });
                 //res.status(200);
                 //res.redirect('/logout');
@@ -209,7 +209,7 @@ app.post('/additem', function (req, res) {
                 res.status(500).send({
                     status: "error",
                     id: id,
-                    error: "error"
+                    error: err
                 });
             }
         })
