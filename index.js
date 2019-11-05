@@ -251,14 +251,14 @@ app.get('/item/:id', function (req, res) {
 app.delete('/item/:id', function (req, res) {
     let id = parseInt(req.params.id);
     console.log(`Deleting item ${id}`);
-    if (true) {
+    if (req.session.loggedin) {
         db.getTweet(id, (err, result) => {
             if (err) {
                 res.status(500).send({
                     status: "error",
                     error: err
                 });
-            } else if (false) {
+            } else if (result.username != req.session.username) {
                 res.status(500).send({
                     status: "error",
                     error: err
