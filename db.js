@@ -99,7 +99,14 @@ module.exports = {
     search: function (timestamp, limit, query, username, callback) {
         let searchQuery = 'SELECT * FROM Tweets WHERE timestamp<=?';
         if (query) {
-            searchQuery += ` AND content LIKE '%${query}%'`;
+            let words = query.split(" ");
+            searchQuery += ` AND (`;
+            console.log(words);
+            words.forEach(word => {
+                searchQuery += `content LIKE '%${word}%' OR `;
+            });
+            searchQuery = searchQuery.slice(0, -3);
+            searchQuery += ')'
         }
         if (username) {
             searchQuery += ` AND username='${username}'`;
