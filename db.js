@@ -96,8 +96,23 @@ module.exports = {
             }
         });
     },
-    search: function (timestamp, limit, callback) {
-        const searchQuery = 'SELECT * FROM Tweets WHERE timestamp<=? ORDER BY timestamp DESC LIMIT ?';
+    search: function (timestamp, limit, query, username, callback) {
+        let searchQuery = 'SELECT * FROM Tweets WHERE timestamp<=?';
+        if (query) {
+            let words = query.split(" ");
+            searchQuery += ` AND (`;
+            console.log(words);
+            words.forEach(word => {
+                searchQuery += `content LIKE '%${word}%' OR `;
+            });
+            searchQuery = searchQuery.slice(0, -3);
+            searchQuery += ')'
+        }
+        if (username) {
+            searchQuery += ` AND username='${username}'`;
+        }
+        searchQuery += ' ORDER BY timestamp DESC LIMIT ?';
+        console.log(searchQuery);
         db.all(searchQuery, [timestamp, limit], (err, result) => {
             if (err) {
                 callback(err);
@@ -126,9 +141,9 @@ module.exports = {
             }
         });
     },
-    getFollowing: function (username, callback) {
-        const getFollowingQuery = 'SELECT User FROM Follower WHERE Follower=?';
-        db.all(getFollowingQuery, [username], (err, result) => {
+    getFollowing: function (username, limit, callback) {
+        const getFollowingQuery = 'SELECT User FROM Follower WHERE Follower=? LIMIT ?';
+        db.all(getFollowingQuery, [username, limit], (err, result) => {
             if (err) {
                 callback(err);
             } else {
@@ -143,6 +158,60 @@ module.exports = {
                 callback(err);
             } else {
                 callback(null, result);
+            }
+        });
+    },
+    follow: function (user, follower, callback) {
+        const followQuery = 'INSERT INTO Follower(User,Follower) VALUES(?,?)';
+        db.run(followQuery, [user, follower], (err, result) => {
+            if (err) {
+                callback(err);
+            } else {
+                callback(null, result);
+            }
+        });
+    },
+    unfollow: function (user, follower, callback) {
+        const unfollowQuery = 'DELETE FROM Follower WHERE User=? AND Follower=?';
+        db.run(unfollowQuery, [user, follower], (err, result) => {
+            if (err) {
+                callback(err);
+            } else {
+                callback(null, result);
+            }
+        });
+    },
+    incrementFollowCounts: function (user, follower, callback) {
+        const incrementFollowingQuery = 'UPDATE User SET following=following+1 WHERE username=?';
+        const incrementFollowerQuery = 'UPDATE User SET followers=followers+1 WHERE username=?';
+        db.run(incrementFollowingQuery, [follower], (err, result) => {
+            if (err) {
+                callback(err);
+            } else {
+                db.run(incrementFollowerQuery, [user], (err, result) => {
+                    if (err) {
+                        callback(err);
+                    } else {
+                        callback(null, result);
+                    }
+                });
+            }
+        });
+    },
+    decrementFollowCounts: function (user, follower, callback) {
+        const decrementFollowingQuery = 'UPDATE User SET following=following-1 WHERE username=?';
+        const decrementFollowerQuery = 'UPDATE User SET followers=follower-1 WHERE username=?';
+        db.run(decrementFollowingQuery, [follower], (err, result) => {
+            if (err) {
+                callback(err);
+            } else {
+                db.run(decrementFollowerQuery, [user], (err, result) => {
+                    if (err) {
+                        callback(err);
+                    } else {
+                        callback(null, result);
+                    }
+                });
             }
         });
     }

@@ -26,13 +26,18 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.get('/', function (req, res) {
+<<<<<<< HEAD
     res.sendFile(__dirname + "/" + "twitter.html");
     // if (req.session.loggedin) {
     //     //res.redirect('/twitter');
+=======
+    // if (req.session.loggedin) {
+>>>>>>> 70e9e680397d3ac367afd1ff6b18f7068ea68fa5
     //     res.sendFile(__dirname + "/" + "twitter.html");
     // } else {
     //     res.sendFile(__dirname + "/" + "index.html");
     // }
+<<<<<<< HEAD
 })
 
 app.get('/current', function(req, res) {
@@ -45,10 +50,14 @@ app.get('/current', function(req, res) {
     }
     res.send(info);
 }) 
+=======
+    res.sendFile(__dirname + "/" + "twitter.html");
+})
+>>>>>>> 70e9e680397d3ac367afd1ff6b18f7068ea68fa5
 
-// app.get('/login', function(req, res) {
-//     res.sendFile(__dirname + "/" + "index.html");
-// })
+app.get('/login', function (req, res) {
+    res.sendFile(__dirname + "/" + "index.html");
+})
 
 app.get('/signup', function (req, res) {
     res.sendFile(__dirname + "/" + "signup.html");
@@ -76,7 +85,7 @@ app.post('/adduser', urlencodedParser, function (req, res) {
         if (err) {
             res.status(500).send({
                 status: "error",
-                error: ""
+                error: err
             });
         }
         else {
@@ -104,7 +113,7 @@ app.post('/adduser', urlencodedParser, function (req, res) {
                 });
             res.status(200).send({
                 status: "OK",
-                error: ""
+                error: null
             });
             // res.status(200);
             // res.redirect('/');
@@ -120,7 +129,7 @@ app.post('/verify', function (req, res) {
         if (result == 1) {
             res.status(200).send({
                 status: "OK",
-                error: ""
+                error: null
             });
             // res.status(200);
             // res.redirect('/');
@@ -128,7 +137,7 @@ app.post('/verify', function (req, res) {
         else {
             res.status(500).send({
                 status: "error",
-                error: "error"
+                error: err
             });
         }
     });
@@ -150,13 +159,13 @@ app.post('/login', function (req, res) {
             req.session.username = username;
             res.status(200).send({
                 status: "OK",
-                error: ""
+                error: null
             });
         }
         else {
             res.status(500).send({
                 status: "error",
-                error: "error"
+                error: err
             });
         }
     });
@@ -165,16 +174,23 @@ app.post('/login', function (req, res) {
 app.post('/logout', function (req, res) {
     if (req.session.loggedin) {
         res.clearCookie('user_sid');
+<<<<<<< HEAD
         // res.status(200).send({
         //     status: "OK",
         //     error: ""
         // });
+=======
+        res.status(200).send({
+            status: "OK",
+            error: null
+        });
+>>>>>>> 70e9e680397d3ac367afd1ff6b18f7068ea68fa5
         // res.status(200);
         res.redirect('/');
     } else {
         res.status(500).send({
             status: "error",
-            error: "error"
+            error: err
         });
     }
 })
@@ -184,7 +200,7 @@ app.post('/additem', function (req, res) {
         res.status(500).send({
             status: "error",
             id: "",
-            error: "error"
+            error: err
         });
     }
     else {
@@ -205,14 +221,14 @@ app.post('/additem', function (req, res) {
                 res.status(500).send({
                     status: "error",
                     id: id,
-                    error: "error"
+                    error: err
                 });
             }
             else if (result == 1) {
                 res.status(200).send({
                     status: "OK",
                     id: id,
-                    error: ""
+                    error: null
                 });
                 //res.status(200);
                 //res.redirect('/logout');
@@ -221,7 +237,7 @@ app.post('/additem', function (req, res) {
                 res.status(500).send({
                     status: "error",
                     id: id,
-                    error: "error"
+                    error: err
                 });
             }
         })
@@ -278,18 +294,46 @@ app.post('/search', function (req, res) {
         }
     }
     //console.log(limit);
-    db.search(timestamp, limit, (err, result) => {
+    db.search(timestamp, limit, req.body.q, req.body.username, (err, result) => {
         if (err) {
             res.status(500).send({
                 status: "error",
                 error: err
             });
         } else {
-            res.status(200).send({
-                status: "OK",
-                error: null,
-                items: result
-            })
+            if (req.body.following) {
+                let following = [];
+                let filteredResult = [];
+                db.getFollowing(req.session.username, (err, users) => {
+                    if (err) {
+                        res.status(500).send({
+                            status: "error",
+                            error: err
+                        });
+                    } else {
+                        users.forEach(user => {
+                            following.push(user.User);
+                        });
+                        result.forEach(tweet => {
+                            if (following.includes(tweet.username)) {
+                                filteredResult.push(tweet);
+                            }
+                        });
+                        res.status(200).send({
+                            status: "OK",
+                            error: null,
+                            items: filteredResult
+                        })
+                    }
+                });
+            }
+            else {
+                res.status(200).send({
+                    status: "OK",
+                    error: null,
+                    items: result
+                })
+            }
         }
     })
 })
@@ -345,7 +389,7 @@ app.get('/user/:username', function (req, res) {
 */
 app.get('/user/:username', function (req, res) {
     let username = req.params.username;
-    console.log(username);
+    console.log(`getting profile of ${username}`);
     db.getProfile(username, (err, result) => {
         if (err) {
             res.status(500).send({
@@ -353,41 +397,25 @@ app.get('/user/:username', function (req, res) {
                 error: err
             });
         } else {
-            let email = result.email;
-            let followers = [];
-            let following = [];
-            db.getFollowers(username, (err, result) => {
-                if (err) {
-                    res.status(500).send({
-                        status: "error",
-                        error: err
-                    });
-                } else {
-                    result.forEach(follower => {
-                        followers.push(follower.Follower)
-                    });
-                    db.getFollowing(username, (err, result) => {
-                        if (err) {
-                            res.status(500).send({
-                                status: "error",
-                                error: err
-                            });
-                        } else {
-                            result.forEach(user => {
-                                following.push(user.User)
-                            });
-                            res.status(200).send({
-                                status: "OK",
-                                user: {
-                                    email: email,
-                                    followers: followers.length,
-                                    following: following.length
-                                }
-                            })
-                        }
-                    })
-                }
-            })
+            //let email = result.email;
+            //result.forEach(follower => {
+            //    followers.push(follower.Follower)
+            //});
+            if (result === undefined || result.length == 0) {
+                res.status(500).send({
+                    status: "error",
+                    error: err
+                });
+            } else {
+                res.status(200).send({
+                    status: "OK",
+                    user: {
+                        email: result.email,
+                        followers: result.followers,
+                        following: result.followers
+                    }
+                });
+            }
         }
     })
 })
@@ -395,11 +423,11 @@ app.get('/user/:username', function (req, res) {
 app.get('/user/:username/posts', function (req, res) {
     let username = req.params.username;
     console.log(username);
-    let limit = 200;
+    let limit = 50;
     if (req.body.limit) {
         limit = req.body.limit;
         if (req.body.limit > 200 || req.body.limit < 0) {
-            limit = 200;
+            limit = 50;
         }
     }
     db.getTweetsFromUser(username, limit, (err, result) => {
@@ -421,11 +449,11 @@ app.get('/user/:username/posts', function (req, res) {
 app.get('/user/:username/followers', function (req, res) {
     let username = req.params.username;
     console.log(username);
-    let limit = 200;
+    let limit = 50;
     if (req.body.limit) {
         limit = req.body.limit;
         if (req.body.limit > 200 || req.body.limit < 0) {
-            limit = 200;
+            limit = 50;
         }
     }
     let followers = [];
@@ -442,10 +470,110 @@ app.get('/user/:username/followers', function (req, res) {
             res.status(200).send({
                 status: "OK",
                 error: null,
-                items: result
+                users: followers
             })
         }
     })
+})
+
+app.get('/user/:username/following', function (req, res) {
+    let username = req.params.username;
+    console.log(username);
+    let limit = 50;
+    if (req.body.limit) {
+        limit = req.body.limit;
+        if (req.body.limit > 200 || req.body.limit < 0) {
+            limit = 50;
+        }
+    }
+    let following = [];
+    db.getFollowing(username, limit, (err, result) => {
+        if (err) {
+            res.status(500).send({
+                status: "error",
+                error: err
+            });
+        } else {
+            console.log(result);
+            result.forEach(user => {
+                following.push(user.User)
+            });
+            res.status(200).send({
+                status: "OK",
+                error: null,
+                users: following
+            })
+        }
+    })
+})
+
+app.post('/follow', function (req, res) {
+    if (false) {
+        res.status(500).send({
+            status: "error",
+            id: "",
+            error: err
+        });
+    }
+    else {
+        let follower = req.session.username;
+        //let follower = req.body.follower;
+        let user = req.body.username;
+        if (req.body.follow === true) {
+            console.log(`${follower} is following ${user}`);
+            db.follow(user, follower, (err, result) => {
+                if (err) {
+                    res.status(500).send({
+                        status: "error",
+                        error: err
+                    });
+                }
+                else {
+                    db.incrementFollowCounts(user, follower, (err, result) => {
+                        if (err) {
+                            res.status(500).send({
+                                status: "error",
+                                error: err
+                            });
+                        }
+                        else {
+                            res.status(200).send({
+                                status: "OK",
+                                error: null
+                            })
+                        }
+                    })
+                }
+            })
+        }
+        else {
+            console.log(`${follower} is unfollowing ${user}`);
+            db.unfollow(user, follower, (err, result) => {
+                if (err) {
+                    res.status(500).send({
+                        status: "error",
+                        error: err
+                    });
+                }
+                else {
+                    db.decrementFollowCounts(user, follower, (err, result) => {
+                        if (err) {
+                            res.status(500).send({
+                                status: "error",
+                                error: err
+                            });
+                        }
+                        else {
+                            res.status(200).send({
+                                status: "OK",
+                                error: null
+                            })
+                        }
+                    })
+                }
+            })
+        }
+    }
 })
 
 var server = app.listen(80, function () {
