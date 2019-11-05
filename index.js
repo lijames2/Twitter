@@ -266,18 +266,46 @@ app.post('/search', function (req, res) {
         }
     }
     //console.log(limit);
-    db.search(timestamp, limit, (err, result) => {
+    db.search(timestamp, limit, req.body.q, req.body.username, (err, result) => {
         if (err) {
             res.status(500).send({
                 status: "error",
                 error: err
             });
         } else {
-            res.status(200).send({
-                status: "OK",
-                error: null,
-                items: result
-            })
+            if (req.body.following) {
+                let following = [];
+                let filteredResult = [];
+                db.getFollowing(req.session.username, (err, users) => {
+                    if (err) {
+                        res.status(500).send({
+                            status: "error",
+                            error: err
+                        });
+                    } else {
+                        users.forEach(user => {
+                            following.push(user.User);
+                        });
+                        result.forEach(tweet => {
+                            if (following.includes(tweet.username)) {
+                                filteredResult.push(tweet);
+                            }
+                        });
+                        res.status(200).send({
+                            status: "OK",
+                            error: null,
+                            items: filteredResult
+                        })
+                    }
+                });
+            }
+            else {
+                res.status(200).send({
+                    status: "OK",
+                    error: null,
+                    items: result
+                })
+            }
         }
     })
 })
@@ -453,8 +481,8 @@ app.post('/follow', function (req, res) {
         });
     }
     else {
-        //let follower = req.session.username;
-        let follower = req.body.follower;
+        let follower = req.session.username;
+        //let follower = req.body.follower;
         let user = req.body.username;
         if (req.body.follow === true) {
             console.log(`${follower} is following ${user}`);

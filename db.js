@@ -96,8 +96,16 @@ module.exports = {
             }
         });
     },
-    search: function (timestamp, limit, callback) {
-        const searchQuery = 'SELECT * FROM Tweets WHERE timestamp<=? ORDER BY timestamp DESC LIMIT ?';
+    search: function (timestamp, limit, query, username, callback) {
+        let searchQuery = 'SELECT * FROM Tweets WHERE timestamp<=?';
+        if (query) {
+            searchQuery += ` AND content LIKE '%${query}%'`;
+        }
+        if (username) {
+            searchQuery += ` AND username='${username}'`;
+        }
+        searchQuery += ' ORDER BY timestamp DESC LIMIT ?';
+        console.log(searchQuery);
         db.all(searchQuery, [timestamp, limit], (err, result) => {
             if (err) {
                 callback(err);
@@ -199,5 +207,5 @@ module.exports = {
                 });
             }
         });
-    },
+    }
 };
