@@ -402,9 +402,9 @@ app.get('/user/:username/posts', function (req, res) {
     let username = req.params.username;
     console.log(`Getting posts from ${username}`);
     let limit = 50;
-    if (req.body.limit) {
-        limit = req.body.limit;
-        if (req.body.limit > 200 || req.body.limit < 0) {
+    if (req.query.limit) {
+        limit = req.query.limit;
+        if (req.query.limit > 200 || req.query.limit < 0) {
             limit = 200;
         }
     }
