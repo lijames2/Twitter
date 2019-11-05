@@ -386,10 +386,9 @@ app.get('/user/:username', function (req, res) {
                         followers: result.followers,
                         following: result.followers
                     }
-                })
+                });
             }
         }
-    }
     })
 })
 
