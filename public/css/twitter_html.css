@@ -353,3 +353,18 @@ body {
 .tag {
     height: 2.25em !important;
 }
+
+.twitter-input-submit {
+    font-size: 12px;
+}
+
+#currentUser {
+    font-weight: bolder;
+    margin-top: 2px;
+    padding: 1px 10px;
+    font-size: 15px;
+    border-bottom: 2px solid #222;
+    background: #888;
+    color: whitesmoke;
+    border-radius: 3px;
+}

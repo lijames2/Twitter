@@ -26,13 +26,25 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.get('/', function (req, res) {
-    if (req.session.loggedin) {
-        //res.redirect('/twitter');
-        res.sendFile(__dirname + "/" + "twitter.html");
-    } else {
-        res.sendFile(__dirname + "/" + "index.html");
-    }
+    res.sendFile(__dirname + "/" + "twitter.html");
+    // if (req.session.loggedin) {
+    //     //res.redirect('/twitter');
+    //     res.sendFile(__dirname + "/" + "twitter.html");
+    // } else {
+    //     res.sendFile(__dirname + "/" + "index.html");
+    // }
 })
+
+app.get('/current', function(req, res) {
+    var info = {};
+    if (req.session.loggedin) {
+        info.loggedin = true;
+        info.username = req.session.username;
+    } else {
+        info.loggedin = false;
+    }
+    res.send(info);
+}) 
 
 // app.get('/login', function(req, res) {
 //     res.sendFile(__dirname + "/" + "index.html");
@@ -153,12 +165,12 @@ app.post('/login', function (req, res) {
 app.post('/logout', function (req, res) {
     if (req.session.loggedin) {
         res.clearCookie('user_sid');
-        res.status(200).send({
-            status: "OK",
-            error: ""
-        });
+        // res.status(200).send({
+        //     status: "OK",
+        //     error: ""
+        // });
         // res.status(200);
-        // res.redirect('/');
+        res.redirect('/');
     } else {
         res.status(500).send({
             status: "error",
