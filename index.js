@@ -243,19 +243,26 @@ app.get('/item/:id', function (req, res) {
 app.delete('/item/:id', function (req, res) {
     let id = parseInt(req.params.id);
     console.log(id);
-    db.deleteTweet(id, (err, result) => {
-        if (err) {
-            res.status(500).send({
-                status: "error",
-                error: err
-            });
-        } else {
-            res.status(200).send({
-                status: "OK",
-                error: null
-            })
-        }
-    });
+    if (req.session.loggedin) {
+        db.deleteTweet(id, (err, result) => {
+            if (err) {
+                res.status(500).send({
+                    status: "error",
+                    error: err
+                });
+            } else {
+                res.status(200).send({
+                    status: "OK",
+                    error: null
+                })
+            }
+        });
+    } else {
+        res.status(500).send({
+            status: "error",
+            error: err
+        });
+    }
 })
 
 app.post('/search', function (req, res) {
