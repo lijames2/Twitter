@@ -395,11 +395,11 @@ app.get('/user/:username', function (req, res) {
 app.get('/user/:username/posts', function (req, res) {
     let username = req.params.username;
     console.log(username);
-    let limit = 200;
+    let limit = 50;
     if (req.body.limit) {
         limit = req.body.limit;
         if (req.body.limit > 200 || req.body.limit < 0) {
-            limit = 200;
+            limit = 50;
         }
     }
     db.getTweetsFromUser(username, limit, (err, result) => {
@@ -421,11 +421,11 @@ app.get('/user/:username/posts', function (req, res) {
 app.get('/user/:username/followers', function (req, res) {
     let username = req.params.username;
     console.log(username);
-    let limit = 200;
+    let limit = 50;
     if (req.body.limit) {
         limit = req.body.limit;
         if (req.body.limit > 200 || req.body.limit < 0) {
-            limit = 200;
+            limit = 50;
         }
     }
     let followers = [];
@@ -451,11 +451,11 @@ app.get('/user/:username/followers', function (req, res) {
 app.get('/user/:username/following', function (req, res) {
     let username = req.params.username;
     console.log(username);
-    let limit = 200;
+    let limit = 50;
     if (req.body.limit) {
         limit = req.body.limit;
         if (req.body.limit > 200 || req.body.limit < 0) {
-            limit = 200;
+            limit = 50;
         }
     }
     let following = [];
