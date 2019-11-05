@@ -490,16 +490,16 @@ app.get('/user/:username/following', function (req, res) {
 })
 
 app.post('/follow', function (req, res) {
-    //if (!req.session.loggedin) {
-    if (false) {
+    if (!req.session.loggedin) {
+    //if (false) {
         res.status(500).send({
             status: "error",
             error: "Not logged in"
         });
     }
     else {
-        //let follower = req.session.username;
-        let follower = req.body.follower;
+        let follower = req.session.username;
+        //let follower = req.body.follower;
         let user = req.body.username;
         db.getUser(user, (err, result) => {
             if (err) {
