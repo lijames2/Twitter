@@ -26,18 +26,13 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.get('/', function (req, res) {
-<<<<<<< HEAD
     res.sendFile(__dirname + "/" + "twitter.html");
     // if (req.session.loggedin) {
     //     //res.redirect('/twitter');
-=======
-    // if (req.session.loggedin) {
->>>>>>> 70e9e680397d3ac367afd1ff6b18f7068ea68fa5
     //     res.sendFile(__dirname + "/" + "twitter.html");
     // } else {
     //     res.sendFile(__dirname + "/" + "index.html");
     // }
-<<<<<<< HEAD
 })
 
 app.get('/current', function(req, res) {
@@ -50,10 +45,6 @@ app.get('/current', function(req, res) {
     }
     res.send(info);
 }) 
-=======
-    res.sendFile(__dirname + "/" + "twitter.html");
-})
->>>>>>> 70e9e680397d3ac367afd1ff6b18f7068ea68fa5
 
 app.get('/login', function (req, res) {
     res.sendFile(__dirname + "/" + "index.html");
@@ -174,17 +165,10 @@ app.post('/login', function (req, res) {
 app.post('/logout', function (req, res) {
     if (req.session.loggedin) {
         res.clearCookie('user_sid');
-<<<<<<< HEAD
         // res.status(200).send({
         //     status: "OK",
         //     error: ""
         // });
-=======
-        res.status(200).send({
-            status: "OK",
-            error: null
-        });
->>>>>>> 70e9e680397d3ac367afd1ff6b18f7068ea68fa5
         // res.status(200);
         res.redirect('/');
     } else {
