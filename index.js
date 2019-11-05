@@ -404,7 +404,7 @@ app.get('/user/:username/posts', function (req, res) {
     let limit = 50;
     if (req.query.limit) {
         limit = req.query.limit;
-        if (req.query.limit > 200 || req.query.limit < 0) {
+        if (limit > 200 || limit < 0) {
             limit = 200;
         }
     }
@@ -432,9 +432,9 @@ app.get('/user/:username/followers', function (req, res) {
     let username = req.params.username;
     console.log(username);
     let limit = 50;
-    if (req.body.limit) {
-        limit = req.body.limit;
-        if (req.body.limit > 200 || req.body.limit < 0) {
+    if (req.query.limit) {
+        limit = req.query.limit;
+        if (limit > 200 || limit < 0) {
             limit = 200;
         }
     }
@@ -462,9 +462,9 @@ app.get('/user/:username/following', function (req, res) {
     let username = req.params.username;
     console.log(username);
     let limit = 50;
-    if (req.body.limit) {
-        limit = req.body.limit;
-        if (req.body.limit > 200 || req.body.limit < 0) {
+    if (req.query.limit) {
+        limit = req.query.limit;
+        if (limit > 200 || limit < 0) {
             limit = 200;
         }
     }
