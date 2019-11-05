@@ -409,10 +409,14 @@ app.get('/user/:username/posts', function (req, res) {
                 error: err
             });
         } else {
+            let tweets = [];
+            result.forEach(tweet => {
+                tweets.push(tweet.id);
+            });
             res.status(200).send({
                 status: "OK",
                 error: null,
-                items: result
+                items: tweets
             })
         }
     })
