@@ -29,7 +29,7 @@ app.get('/', function (req, res) {
     res.sendFile(__dirname + "/" + "twitter.html");
 })
 
-app.get('/current', function(req, res) {
+app.get('/current', function (req, res) {
     var info = {};
     if (req.session.loggedin) {
         info.loggedin = true;
@@ -38,7 +38,7 @@ app.get('/current', function(req, res) {
         info.loggedin = false;
     }
     res.send(info);
-}) 
+})
 
 app.get('/login', function (req, res) {
     res.sendFile(__dirname + "/" + "index.html");
@@ -490,27 +490,35 @@ app.get('/user/:username/following', function (req, res) {
 })
 
 app.post('/follow', function (req, res) {
-    if (!req.session.loggedin) {
+    //if (!req.session.loggedin) {
+    if (false) {
         res.status(500).send({
             status: "error",
-            error: err
+            error: "Not logged in"
         });
     }
     else {
-        let follower = req.session.username;
-        //let follower = req.body.follower;
+        //let follower = req.session.username;
+        let follower = req.body.follower;
         let user = req.body.username;
-        if (req.body.follow === true) {
-            console.log(`${follower} is following ${user}`);
-            db.follow(user, follower, (err, result) => {
-                if (err) {
-                    res.status(500).send({
-                        status: "error",
-                        error: err
-                    });
-                }
-                else {
-                    db.incrementFollowCounts(user, follower, (err, result) => {
+        db.getUser(user, (err, result) => {
+            if (err) {
+                res.status(500).send({
+                    status: "error",
+                    error: err
+                });
+            }
+            else if (!result) {
+                console.log(result);
+                res.status(500).send({
+                    status: "error",
+                    error: err
+                });
+            }
+            else {
+                if (req.body.follow === true) {
+                    console.log(`${follower} is following ${user}`);
+                    db.follow(user, follower, (err, result) => {
                         if (err) {
                             res.status(500).send({
                                 status: "error",
@@ -518,26 +526,26 @@ app.post('/follow', function (req, res) {
                             });
                         }
                         else {
-                            res.status(200).send({
-                                status: "OK",
-                                error: null
+                            db.incrementFollowCounts(user, follower, (err, result) => {
+                                if (err) {
+                                    res.status(500).send({
+                                        status: "error",
+                                        error: err
+                                    });
+                                }
+                                else {
+                                    res.status(200).send({
+                                        status: "OK",
+                                        error: null
+                                    })
+                                }
                             })
                         }
                     })
                 }
-            })
-        }
-        else {
-            console.log(`${follower} is unfollowing ${user}`);
-            db.unfollow(user, follower, (err, result) => {
-                if (err) {
-                    res.status(500).send({
-                        status: "error",
-                        error: err
-                    });
-                }
                 else {
-                    db.decrementFollowCounts(user, follower, (err, result) => {
+                    console.log(`${follower} is unfollowing ${user}`);
+                    db.unfollow(user, follower, (err, result) => {
                         if (err) {
                             res.status(500).send({
                                 status: "error",
@@ -545,15 +553,25 @@ app.post('/follow', function (req, res) {
                             });
                         }
                         else {
-                            res.status(200).send({
-                                status: "OK",
-                                error: null
+                            db.decrementFollowCounts(user, follower, (err, result) => {
+                                if (err) {
+                                    res.status(500).send({
+                                        status: "error",
+                                        error: err
+                                    });
+                                }
+                                else {
+                                    res.status(200).send({
+                                        status: "OK",
+                                        error: null
+                                    })
+                                }
                             })
                         }
                     })
                 }
-            })
-        }
+            }
+        });
     }
 })
 
