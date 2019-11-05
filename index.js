@@ -385,7 +385,7 @@ app.get('/user/:username', function (req, res) {
                     error: err
                 });
             } else {
-                console.log(result);
+                //console.log(result);
                 res.status(200).send({
                     status: "OK",
                     user: {
