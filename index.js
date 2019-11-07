@@ -27,15 +27,6 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 app.get('/', function (req, res) {
     res.sendFile(__dirname + "/" + "twitter.html");
-<<<<<<< HEAD
-    // if (req.session.loggedin) {
-    //     //res.redirect('/twitter');
-    //     res.sendFile(__dirname + "/" + "twitter.html");
-    // } else {
-    //     res.sendFile(__dirname + "/" + "index.html");
-    // }
-=======
->>>>>>> a163048dbcd8f53fee2458cbf57444ebab27e1b8
 })
 
 app.get('/current', function (req, res) {
@@ -47,11 +38,7 @@ app.get('/current', function (req, res) {
         info.loggedin = false;
     }
     res.send(info);
-<<<<<<< HEAD
-}) 
-=======
 })
->>>>>>> a163048dbcd8f53fee2458cbf57444ebab27e1b8
 
 app.get('/login', function (req, res) {
     res.sendFile(__dirname + "/" + "index.html");
@@ -172,17 +159,10 @@ app.post('/login', function (req, res) {
 app.post('/logout', function (req, res) {
     if (req.session.loggedin) {
         res.clearCookie('user_sid');
-<<<<<<< HEAD
-        // res.status(200).send({
-        //     status: "OK",
-        //     error: ""
-        // });
-=======
         res.status(200).send({
             status: "OK",
             error: null
         });
->>>>>>> a163048dbcd8f53fee2458cbf57444ebab27e1b8
         // res.status(200);
         // res.redirect('/');
     } else {
@@ -328,10 +308,12 @@ app.post('/search', function (req, res) {
                 error: err
             });
         } else {
-            if (typeof req.body.following === 'undefined' || req.body.following) {
+            //console.log(result);
+            //if logged in and either following not specific or specified as yes, filter tweets
+            if (res.session && (typeof req.body.following === 'undefined' || req.body.following)) {
                 let following = [];
                 let filteredResult = [];
-                db.getFollowing('irRix0KyUi', 99999, (err, users) => {
+                db.getFollowing(res.session.username, 99999, (err, users) => {
                     if (err) {
                         res.status(500).send({
                             status: "error",
@@ -364,56 +346,7 @@ app.post('/search', function (req, res) {
         }
     })
 })
-/*
-app.get('/user/:username', function (req, res) {
-    let username = req.params.username;
-    console.log(username);
-    db.getProfile(username, (err, result) => {
-        if (err) {
-            res.status(500).send({
-                status: "error",
-                error: err
-            });
-        } else {
-            let email = result.email;
-            let followers = [];
-            let following = [];
-            db.getFollowers(username, (err, result) => {
-                if (err) {
-                    res.status(500).send({
-                        status: "error",
-                        error: err
-                    });
-                } else {
-                    result.forEach(follower => {
-                        followers.push(follower.Follower)
-                    });
-                    db.getFollowing(username, (err, result) => {
-                        if (err) {
-                            res.status(500).send({
-                                status: "error",
-                                error: err
-                            });
-                        } else {
-                            result.forEach(user => {
-                                following.push(user.User)
-                            });
-                            res.status(200).send({
-                                status: "OK",
-                                user: {
-                                    email: email,
-                                    followers: followers.length,
-                                    following: following.length
-                                }
-                            })
-                        }
-                    })
-                }
-            })
-        }
-    })
-})
-*/
+
 app.get('/user/:username', function (req, res) {
     let username = req.params.username;
     console.log(`getting profile of ${username}`);
