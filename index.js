@@ -301,50 +301,109 @@ app.post('/search', function (req, res) {
         }
     }
     //console.log(limit);
-    db.search(timestamp, limit, req.body.q, req.body.username, (err, result) => {
-        if (err) {
-            res.status(500).send({
-                status: "error",
-                error: err
-            });
-        } else {
-            //console.log(result);
-            //if logged in and either following not specific or specified as yes, filter tweets
-            if (res.session && (typeof req.body.following === 'undefined' || req.body.following)) {
-                let following = [];
-                let filteredResult = [];
-                db.getFollowing(res.session.username, 99999, (err, users) => {
+    if (req.session.loggedin && (typeof req.body.following === 'undefined' || req.body.following)) {
+        following = true;
+        console.log('a')
+        //Get following usernames
+        followingNames = [];
+        db.getFollowing(req.session.username, 99999, (err, users) => {
+            if (err) {
+                res.status(500).send({
+                    status: "error",
+                    error: err
+                });
+            } else {
+                users.forEach(user => {
+                    followingNames.push(user.User);
+                });
+                console.log(followingNames)
+                db.search(timestamp, limit, req.body.q, req.body.username, following, followingNames, (err, result) => {
                     if (err) {
                         res.status(500).send({
                             status: "error",
                             error: err
                         });
                     } else {
-                        users.forEach(user => {
-                            following.push(user.User);
-                        });
-                        result.forEach(tweet => {
-                            if (following.includes(tweet.username)) {
-                                filteredResult.push(tweet);
-                            }
-                        });
                         res.status(200).send({
                             status: "OK",
                             error: null,
-                            items: filteredResult
+                            items: result
                         })
                     }
-                });
+                })
             }
-            else {
+        });
+    }
+    else {
+        console.log('b')
+        following = false;
+        followingNames = [];
+        db.search(timestamp, limit, req.body.q, req.body.username, following, followingNames, (err, result) => {
+            if (err) {
+                res.status(500).send({
+                    status: "error",
+                    error: err
+                });
+            } else {
                 res.status(200).send({
                     status: "OK",
                     error: null,
                     items: result
                 })
             }
-        }
-    })
+        })
+    }
+
+    /*
+        db.search(timestamp, limit, req.body.q, req.body.username, (err, result) => {
+            if (err) {
+                res.status(500).send({
+                    status: "error",
+                    error: err
+                });
+            } else {
+                //console.log(result);
+                console.log(req.session);
+                ////if logged in and either following not specific or specified as yes, filter tweets
+                if (req.session.loggedin && (typeof req.body.following === 'undefined' || req.body.following)) {
+                    console.log('a');
+                    //console.log(result);
+                    let following = [];
+                    let filteredResult = [];
+                    db.getFollowing(req.session.username, 99999, (err, users) => {
+                        if (err) {
+                            res.status(500).send({
+                                status: "error",
+                                error: err
+                            });
+                        } else {
+                            users.forEach(user => {
+                                following.push(user.User);
+                            });
+                            result.forEach(tweet => {
+                                if (following.includes(tweet.username)) {
+                                    filteredResult.push(tweet);
+                                }
+                            });
+                            res.status(200).send({
+                                status: "OK",
+                                error: null,
+                                items: filteredResult
+                            })
+                        }
+                    });
+                }
+                else {
+                    console.log('b');
+                    res.status(200).send({
+                        status: "OK",
+                        error: null,
+                        items: result
+                    })
+                }
+            }
+        })
+        */
 })
 
 app.get('/user/:username', function (req, res) {
