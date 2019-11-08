@@ -139,6 +139,40 @@
             deleteItemToModal($('#deleteID').val());
         }
 
+        function getUser() {
+            getUserToModal($('#userID').val());
+        }
+
+        function followUser() {
+            getUserFollowToModal($('#userFollowID').val());
+        }
+
+        function getUserToModal(userID) {
+            fetch(`/user/${userID}`, {
+                method: "GET"
+            }).then(res => res.json())
+                .then(data => {
+                    let user = data.user;
+                    $('#modalUsername').text(user.username);
+                    $('#modalHandle').text('Followers : ' + user.followers);
+                    $('#modalID').text('Following : ' + user.following);
+                    $('#itemModal').show();
+
+                }).catch(err => {
+                    console.error('Error: ', err);
+                });
+        }
+
+        function getUserFollowToModal(userFollowID) {
+            let data = {
+                username: userFollowID,
+            };
+            fetch(`/follow/`, {
+                method: "POST",
+                body: JSON.stringify(data)
+            }).then(res => res.json());
+        }
+
         function getItemToModal(itemID) {
             fetch(`/item/${itemID}`, {
                 method: "GET"
@@ -270,7 +304,7 @@
                             onclick="getTweet();">
                     </div>
                 </div>
-            </div>
+            </div>  
 
             <div class="navbar-item">
                 <div class="field has-addons twitter-control">
@@ -280,6 +314,30 @@
                     <div class="control">
                         <input class="button is-info twitter-input-submit" value="Delete Tweet By ID" type="submit" id="searchidbtn"
                             onclick="deleteTweet();">
+                    </div>
+                </div>
+            </div>
+
+            <div class="navbar-item">
+                <div class="field has-addons twitter-control">
+                    <div class="control">
+                        <input name="user" id="userID" class="input twitter-input" type="text" placeholder="Input Username">
+                    </div>
+                    <div class="control">
+                        <input class="button is-info twitter-input-submit" value="View Profile" type="submit" id="searchidbtn"
+                            onclick="getUser();">
+                    </div>
+                </div>
+            </div>
+
+            <div class="navbar-item">
+                <div class="field has-addons twitter-control">
+                    <div class="control">
+                        <input name="userFollow" id="userFollowID" class="input twitter-input" type="text" placeholder="Input Username">
+                    </div>
+                    <div class="control">
+                        <input class="button is-info twitter-input-submit" value="Follow User" type="submit" id="searchidbtn"
+                            onclick="followUser();">
                     </div>
                 </div>
             </div>
@@ -298,6 +356,7 @@
                     </div>
                 </div>
             </div>
+            
 
             <div class="navbar-end">
                 <div id='login' class="navbar-item">

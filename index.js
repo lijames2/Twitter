@@ -541,8 +541,10 @@ app.post('/follow', function (req, res) {
     }
     else {
         let follower = req.session.username;
+        console.log(follower);
         //let follower = req.body.follower;
         let user = req.body.username;
+        console.log(user);
         db.getUser(user, (err, result) => {
             if (err) {
                 res.status(500).send({
