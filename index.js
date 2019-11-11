@@ -38,7 +38,11 @@ app.get('/current', function (req, res) {
         info.loggedin = false;
     }
     res.send(info);
+<<<<<<< HEAD
 }) 
+=======
+})
+>>>>>>> 3ee80df4a17d84a480fc9ea2195f759009e3e03b
 
 app.get('/login', function (req, res) {
     res.sendFile(__dirname + "/" + "index.html");
@@ -301,99 +305,111 @@ app.post('/search', function (req, res) {
         }
     }
     //console.log(limit);
-    db.search(timestamp, limit, req.body.q, req.body.username, (err, result) => {
-        if (err) {
-            res.status(500).send({
-                status: "error",
-                error: err
-            });
-        } else {
-            if (typeof req.body.following === 'undefined' || req.body.following) {
-                let following = [];
-                let filteredResult = [];
-                db.getFollowing('irRix0KyUi', 99999, (err, users) => {
+    if (req.session.loggedin && (typeof req.body.following === 'undefined' || req.body.following)) {
+        following = true;
+        console.log('a')
+        //Get following usernames
+        followingNames = [];
+        db.getFollowing(req.session.username, 99999, (err, users) => {
+            if (err) {
+                res.status(500).send({
+                    status: "error",
+                    error: err
+                });
+            } else {
+                users.forEach(user => {
+                    followingNames.push(user.User);
+                });
+                console.log(followingNames)
+                db.search(timestamp, limit, req.body.q, req.body.username, following, followingNames, (err, result) => {
                     if (err) {
                         res.status(500).send({
                             status: "error",
                             error: err
                         });
                     } else {
-                        users.forEach(user => {
-                            following.push(user.User);
-                        });
-                        result.forEach(tweet => {
-                            if (following.includes(tweet.username)) {
-                                filteredResult.push(tweet);
-                            }
-                        });
                         res.status(200).send({
                             status: "OK",
                             error: null,
-                            items: filteredResult
+                            items: result
                         })
                     }
-                });
+                })
             }
-            else {
+        });
+    }
+    else {
+        console.log('b')
+        following = false;
+        followingNames = [];
+        db.search(timestamp, limit, req.body.q, req.body.username, following, followingNames, (err, result) => {
+            if (err) {
+                res.status(500).send({
+                    status: "error",
+                    error: err
+                });
+            } else {
                 res.status(200).send({
                     status: "OK",
                     error: null,
                     items: result
                 })
             }
-        }
-    })
-})
-/*
-app.get('/user/:username', function (req, res) {
-    let username = req.params.username;
-    console.log(username);
-    db.getProfile(username, (err, result) => {
-        if (err) {
-            res.status(500).send({
-                status: "error",
-                error: err
-            });
-        } else {
-            let email = result.email;
-            let followers = [];
-            let following = [];
-            db.getFollowers(username, (err, result) => {
-                if (err) {
-                    res.status(500).send({
-                        status: "error",
-                        error: err
-                    });
-                } else {
-                    result.forEach(follower => {
-                        followers.push(follower.Follower)
-                    });
-                    db.getFollowing(username, (err, result) => {
+        })
+    }
+
+    /*
+        db.search(timestamp, limit, req.body.q, req.body.username, (err, result) => {
+            if (err) {
+                res.status(500).send({
+                    status: "error",
+                    error: err
+                });
+            } else {
+                //console.log(result);
+                console.log(req.session);
+                ////if logged in and either following not specific or specified as yes, filter tweets
+                if (req.session.loggedin && (typeof req.body.following === 'undefined' || req.body.following)) {
+                    console.log('a');
+                    //console.log(result);
+                    let following = [];
+                    let filteredResult = [];
+                    db.getFollowing(req.session.username, 99999, (err, users) => {
                         if (err) {
                             res.status(500).send({
                                 status: "error",
                                 error: err
                             });
                         } else {
-                            result.forEach(user => {
-                                following.push(user.User)
+                            users.forEach(user => {
+                                following.push(user.User);
+                            });
+                            result.forEach(tweet => {
+                                if (following.includes(tweet.username)) {
+                                    filteredResult.push(tweet);
+                                }
                             });
                             res.status(200).send({
                                 status: "OK",
-                                user: {
-                                    email: email,
-                                    followers: followers.length,
-                                    following: following.length
-                                }
+                                error: null,
+                                items: filteredResult
                             })
                         }
+                    });
+                }
+                else {
+                    console.log('b');
+                    res.status(200).send({
+                        status: "OK",
+                        error: null,
+                        items: result
                     })
                 }
-            })
-        }
-    })
+            }
+        })
+        */
 })
-*/
+
 app.get('/user/:username', function (req, res) {
     let username = req.params.username;
     console.log(`getting profile of ${username}`);
@@ -529,8 +545,10 @@ app.post('/follow', function (req, res) {
     }
     else {
         let follower = req.session.username;
+        console.log(follower);
         //let follower = req.body.follower;
         let user = req.body.username;
+        console.log(user);
         db.getUser(user, (err, result) => {
             if (err) {
                 res.status(500).send({

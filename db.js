@@ -96,7 +96,7 @@ module.exports = {
             }
         });
     },
-    search: function (timestamp, limit, query, username, callback) {
+    search: function (timestamp, limit, query, username, following, followingNames, callback) {
         let searchQuery = 'SELECT * FROM Tweets WHERE timestamp<=?';
         if (query) {
             let words = query.split(" ");
@@ -110,6 +110,14 @@ module.exports = {
         }
         if (username) {
             searchQuery += ` AND username='${username}'`;
+        }
+        else if (following) {//filter by followed users
+            searchQuery += ` AND (`;
+            followingNames.forEach(user => {
+                searchQuery += `username = '${user}' OR `;
+            });
+            searchQuery = searchQuery.slice(0, -3);
+            searchQuery += ')'
         }
         searchQuery += ' ORDER BY timestamp DESC LIMIT ?';
         console.log(searchQuery);
