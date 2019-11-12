@@ -189,6 +189,7 @@
                     data.items.forEach(item => {
                         addTweet(item);
                     });
+                    $("#searchModal").removeClass("is-active");
                 }).catch(err => {
                     console.error('Error: ', err);
                 });
