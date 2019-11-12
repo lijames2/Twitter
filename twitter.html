@@ -206,9 +206,32 @@
             }).then(res => res.json())
                 .then(data => {
                     let user = data.user;
-                    $('#modalUsername').text(user.username);
-                    $('#modalHandle').text('Followers : ' + user.followers);
-                    $('#modalID').text('Following : ' + user.following);
+                    $('#modalUsername').text(userID);
+                    console.log(data);
+                    fetch("/user/" + userID + "/followers", {
+                        method: "GET"
+                    }).then(res => res.json())
+                    .then(data => {
+                        var dataF = []
+                        data.users.forEach(item => {
+                            dataF.push(item);
+                        });
+                        $('#modalHandle').text('\nFollowers : ' + dataF);                        
+                    }).catch(err => {
+                        console.error('Error: ', err);
+                    });
+                    fetch("/user/" + userID + "/following", {
+                        method: "GET"
+                    }).then(res => res.json())
+                    .then(data => {
+                        var dataF = []
+                        data.users.forEach(item => {
+                            dataF.push(item);
+                        });
+                        $('#modalID').text('\nFollowing : ' + dataF);                        
+                    }).catch(err => {
+                        console.error('Error: ', err);
+                    });
                     $('#itemModal').show();
 
                 }).catch(err => {
@@ -219,9 +242,14 @@
         function getUserFollowToModal(userFollowID) {
             let data = {
                 username: userFollowID,
+                follow: true
             };
             fetch(`/follow/`, {
                 method: "POST",
+                headers: {
+                    'Accept': 'application/json, text/plain, */*',
+                    'Content-Type': 'application/json'
+                },
                 body: JSON.stringify(data)
             }).then(res => res.json())
                 .then(data => {
