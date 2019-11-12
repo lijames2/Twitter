@@ -38,11 +38,7 @@ app.get('/current', function (req, res) {
         info.loggedin = false;
     }
     res.send(info);
-<<<<<<< HEAD
-}) 
-=======
 })
->>>>>>> 3ee80df4a17d84a480fc9ea2195f759009e3e03b
 
 app.get('/login', function (req, res) {
     res.sendFile(__dirname + "/" + "index.html");
