@@ -22,9 +22,14 @@
             $("#showModal").click(function () {
                 $("#loginModal").addClass("is-active");
             });
-
             $("#loginModalClose").click(function () {
                 $("#loginModal").removeClass("is-active");
+            });
+            $("#showSearchModal").click(function () {
+                $("#searchModal").addClass("is-active");
+            });
+            $("#searchModalClose").click(function () {
+                $("#searchModal").removeClass("is-active");
             });
         });
 
@@ -159,8 +164,12 @@
 
         function search() {
             emptyList();
+            console.log("BRUH");
             let timestamp = $('#time').val();
             let limit = $('#limit').val();
+            let searchQuery = $('#searchQuery').val();
+            let username = $('usernameSearch').val();
+            let following = $('followingSearch').val();
             var data = {
                 timestamp: timestamp,
                 limit: limit
@@ -417,20 +426,8 @@
                     </div>
                 </div>
             </div>
-
-            <div class="navbar-item">
-                <div class="field has-addons twitter-control">
-                    <div class="control">
-                        <input name="userFollow" id="userFollowID" class="input twitter-input" type="text" placeholder="Input Username">
-                    </div>
-                    <div class="control">
-                        <input class="button is-info twitter-input-submit" value="Follow User" type="submit" id="searchidbtn"
-                            onclick="followUser();">
-                    </div>
-                </div>
-            </div>
             
-            <div class="navbar-item">
+            <!-- <div class="navbar-item">
                 <div class="field has-addons twitter-control">
                     <div class="control">
                         <input name="timestamp" id="time" class="input twitter-input" type="text" placeholder="Input epoch time">
@@ -441,6 +438,47 @@
                     <div class="control">
                         <input class="button is-info twitter-input-submit" value="Search" type="submit" id="searchBtn"
                             onclick="search();">
+                    </div>
+                </div>
+            </div> -->
+            <div class="navbar-item">
+                <div id='search' class="navbar-item">
+                    <a id="showSearchModal" class="link-button">Advanced Search</a>
+                    <div id="searchModal" class="modal">
+                        <div class="modal-background"></div>
+                        <div class="container search-wrapper">
+                            <div class="notification">
+                                <button class="delete login-delete" id="searchModalClose" aria-label="close"></button>
+                                <h1 id="loginBox" class="title">Advanced Search</h1>
+                                <div class="field">
+                                    <label class="label">Timestamp</label>
+                                    <input id="time" name="time" class="input" type="text" placeholder="Input timestamp ">
+                                </div>
+                                <div class="field">
+                                    <label class="label">Limit</label>
+                                    <input id="limit" name="limit" class="input" type="text" placeholder="Input limit (max 200)">
+                                </div>
+                                <div class="field">
+                                    <label class="label">Search Query</label>
+                                    <input id="query" name="query" class="input" type="text" placeholder="Input search query">
+                                </div>
+                                <div class="field">
+                                    <label class="label">Username</label>
+                                    <input id="usernameSearch" name="usernameSearch" class="input" type="text" placeholder="Input username">
+                                </div>
+                                <div class="field">
+                                    <label class="label">Following</label>
+                                    <input type="checkbox" name="followingSearch" id="followingSearch" value="Following">
+                                </div>
+                                <input value="Search" type="submit" id="loginBtn" class="button login-button login-btn"
+                                    onclick="search()">
+                                <br />
+                                <br />
+                                </form>
+
+                            </div>
+                            <br />
+                        </div>
                     </div>
                 </div>
             </div>
@@ -495,15 +533,6 @@
                 <div id='signout' class="navbar-item">
                     <div>
                         <article class="media">
-                            <!-- <figure class="media-left" style="margin-left: 3px !important">
-                                <p class="image">
-                                    <i class="fas fa-user" style="display: inline-block;
-                                    border-radius: 100px;
-                                    font-size: 1.5em;
-                                    box-shadow: 0px 0px 2px rgb(25, 39, 52);
-                                    padding: 0.2em 0.3em;"></i>
-                                </p>
-                            </figure> -->
                             <div class="media-content">
                                 <div class="content">
                                     <p id='currentUser'>Guest</p>
@@ -558,18 +587,6 @@
                         <!--<form action="/additem/" method="POST">-->
                         <textarea id="yeettext" name="content" rows="2" class="tweet-textarea" placeholder="What's happening?"></textarea>
                         <div class="control" id="compose-tweet">
-                            <!--
-                                <label class="radio">
-                                    <input type="radio" name="childType" value="retweet">
-                                    Reyeet
-                                    </label>
-                                    <label class="radio">
-                                        <input type="radio" name="childType" value="reply">
-                                        Reply
-                                    </label>
-                                    
-                                    <button type="submit" class="button is-right tweet-compose-btn">Share</button>
-                                    -->
                             <input value="Yeet" type="submit" id="yeetBtn" class="button is-right tweet-compose-btn"
                                 onclick="yeet();">
                         </div>
@@ -579,8 +596,7 @@
             </div>
             <div class="tile rec-modal">
                 <div style="width: 100%">
-                    <span class="title is-4 rec-title">Who to follow</span><button class="link-button"> Refresh</button><button
-                        class="link-button"> View All</button>
+                    <span class="title is-4 rec-title">Who to follow</span>
                     <div class="rec-follow">
                         <article class="media">
                             <figure class="media-left">
@@ -655,6 +671,19 @@
                                         </span>
                                         <span class="rec-btn-text">Follow</span>
                                     </button>
+                                </div>
+                            </div>
+                        </article>
+                        <article class="media">
+                            <div class="navbar-item">
+                                <div class="field has-addons twitter-control">
+                                    <div class="control">
+                                        <input name="userFollow" id="userFollowID" class="input twitter-input" type="text" placeholder="Input Username">
+                                    </div>
+                                    <div class="control">
+                                        <input class="button is-info twitter-input-submit" value="Follow User" type="submit" id="searchidbtn"
+                                            onclick="followUser();">
+                                    </div>
                                 </div>
                             </div>
                         </article>
