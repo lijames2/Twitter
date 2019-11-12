@@ -38,7 +38,7 @@ app.get('/current', function (req, res) {
         info.loggedin = false;
     }
     res.send(info);
-})
+}) 
 
 app.get('/login', function (req, res) {
     res.sendFile(__dirname + "/" + "index.html");
