@@ -10,9 +10,15 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <link rel="stylesheet" type="text/css" href="css/twitter.css">
     <script>
+        var currentUser = null;
+
         $(document).ready(function () {
             populateTweets();
-            getLoggedInfo();
+            if(currentUser) {
+                populateCurrentFollowers();
+                populateCurrentFollowing();
+            }
+            currentUser = getLoggedInfo();
             $("#showModal").click(function () {
                 $("#loginModal").addClass("is-active");
             });
@@ -59,6 +65,32 @@
                 });
         };
 
+        function populateCurrentFollowers() {
+            fetch("/user/" + currentUser + "/followers", {
+                method: "GET"
+            }).then(res => res.json())
+            .then(data => {
+                data.items.forEach(item => {
+                    addFollower(item);
+                });
+            }).catch(err => {
+                console.error('Error: ', err);
+            });
+        }
+
+        function populateCurrentFollowing() {
+            fetch("/user/" + currentUser + "/following", {
+                method: "GET"
+            }).then(res => res.json())
+            .then(data => {
+                data.items.forEach(item => {
+                    addFollowing(item);
+                });
+            }).catch(err => {
+                console.error('Error: ', err);
+            });
+        }
+
         function addTweet(tweet) {
             console.log(`adding ${tweet.id}`);
             var newTweet =
@@ -79,6 +111,27 @@
                     <br>
                 '</div>`;
             $(newTweet).appendTo($('#tweetcolumn'));
+        }
+
+        function addFollower(tweet) {
+            console.log(tweet);
+            var newFollower =
+                `<div class="container">
+                    <div class="tweet-content">
+                        ${tweet}
+                        </div>
+                '</div>`;
+            $(newFollower).appendTo($('#followercolumn'));
+        }
+
+        function addFollowing(tweet) {
+            var newFollowing =
+                `<div class="container">
+                    <div class="tweet-content">
+                        ${tweet}
+                        </div>
+                '</div>`;
+            $(newFollowing).appendTo($('#followingcolumn'));
         }
 
         function yeet() {
@@ -170,7 +223,12 @@
             fetch(`/follow/`, {
                 method: "POST",
                 body: JSON.stringify(data)
-            }).then(res => res.json());
+            }).then(res => res.json())
+                .then(data => {
+                    console.log(data);
+                }).catch(err => {
+                    console.error('Error: ', err);
+                });
         }
 
         function getItemToModal(itemID) {
@@ -203,9 +261,11 @@
                         $('#currentUser').text(data.username);
                         $('#signout').show();
                         $('#login').hide();
+                        return data.username;
                     } else {
                         $('#login').show();
                         $('#signout').hide();
+                        currentUser = null;
                     }
                 }).catch(err => {
                     console.error('Error: ', err);
@@ -341,7 +401,7 @@
                     </div>
                 </div>
             </div>
-
+            
             <div class="navbar-item">
                 <div class="field has-addons twitter-control">
                     <div class="control">
@@ -356,7 +416,6 @@
                     </div>
                 </div>
             </div>
-            
 
             <div class="navbar-end">
                 <div id='login' class="navbar-item">
@@ -618,12 +677,12 @@
                     </div>
                 </div>
                 <div id="following" class="tabcontent">
-                    <div id="tweetcolumn" class="column">
+                    <div id="followingcolumn" class="column">
                         <br>
                     </div>
                 </div>
                 <div id="followers" class="tabcontent">
-                    <div id="tweetcolumn" class="column">
+                    <div id="followercolumn" class="column">
                         <br>
                     </div>
                 </div>
