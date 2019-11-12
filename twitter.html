@@ -164,15 +164,17 @@
 
         function search() {
             emptyList();
-            console.log("BRUH");
             let timestamp = $('#time').val();
             let limit = $('#limit').val();
-            let searchQuery = $('#searchQuery').val();
-            let username = $('usernameSearch').val();
-            let following = $('followingSearch').val();
+            let query = $('#query').val();
+            let username = $('#usernameSearch').val();
+            let following = document.getElementById("followingSearch").checked;
             var data = {
                 timestamp: timestamp,
-                limit: limit
+                limit: limit, 
+                q : query,
+                username : username,
+                following : following
             }
             fetch("/search", {
                 method: "POST",
@@ -440,10 +442,10 @@
                                 </div>
                                 <div class="field">
                                     <label class="label">Following</label>
-                                    <input type="checkbox" name="followingSearch" id="followingSearch" value="Following">
+                                    <input type="checkbox" name="followingSearch" id="followingSearch">
                                 </div>
-                                <input value="Search" type="submit" id="loginBtn" class="button login-button login-btn"
-                                    onclick="search()">
+                                <input value="Search" type="submit" id="searchBtn" class="button is-info twitter-input-submit"
+                                    onclick="search();">
                                 <br />
                                 <br />
                                 </form>
