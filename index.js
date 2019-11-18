@@ -239,20 +239,29 @@ app.post('/additem', function (req, res) {
 
 app.post('/addmedia', mediaPath.single('content'), function (req, res) {
     //console.log(req);
-    if (req.file) {
-        var filename = req.file.filename;
-        console.log(filename);
-        res.status(200).send({
-            status: "OK",
-            id: filename,
-            error: null
-        });
-    } else {
-        console.log('No File Uploaded');
+    if (!req.session.loggedin) {
         res.status(500).send({
             status: "error",
-            error: null
+            id: "",
+            error: err
         });
+    }
+    else {
+        if (req.file) {
+            var filename = req.file.filename;
+            console.log(filename);
+            res.status(200).send({
+                status: "OK",
+                id: filename,
+                error: null
+            });
+        } else {
+            console.log('No File Uploaded');
+            res.status(500).send({
+                status: "error",
+                error: null
+            });
+        }
     }
 })
 
