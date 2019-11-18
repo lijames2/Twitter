@@ -5,21 +5,22 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.1/css/bulma.css" crossorigin="anonymous">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU"
         crossorigin="anonymous">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.2/animate.min.css">
     <link rel="icon" type="image/png" href="public/images/favicon.png">
     <link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <link rel="stylesheet" type="text/css" href="css/twitter.css">
+    <link href="https://fonts.googleapis.com/css?family=Alata&display=swap" rel="stylesheet">
     <script>
-        var currentUser = null;
+        var currentUser = getLoggedInfo();
+        var visiting = null;
 
         $(document).ready(function () {
-            populateTweets();
-            if(currentUser) {
-                populateCurrentFollowers();
-                populateCurrentFollowing();
-            }
-            currentUser = getLoggedInfo();
+            promptSearch();
             $("#showModal").click(function () {
+                $("#loginModal").addClass("is-active");
+            });
+            $("#showModal2").click(function () {
                 $("#loginModal").addClass("is-active");
             });
             $("#loginModalClose").click(function () {
@@ -32,6 +33,30 @@
                 $("#searchModal").removeClass("is-active");
             });
         });
+
+        function displayProfile(username) {
+            $("#profile").addClass("is-active");
+            $("#prompt").removeClass("is-active");
+            populateCurrentFollowers(username);
+            populateCurrentFollowing(username);
+            //populateCurrentProfile(currentUser);
+            $("#currentUserName").text(username);
+            $("#currentUserHandle").text(username);
+            if($("#currentUser").text() == username) {
+                // DISPLAY YEET/FOLLOW BOXES
+                $("#yeetBox").show();
+                $("#followBox").show();
+            } else {
+                $("#yeetBox").hide();
+                $("#followBox").hide();
+            }
+            search(username);
+        }
+
+        function promptSearch() {
+            $("#prompt").addClass("is-active");
+            $("#profile").removeClass("is-active");
+        }
 
         function redirect(options) {
             var $form = $("<form />");
@@ -49,6 +74,8 @@
 
         function emptyList() {
             $('#tweetcolumn').empty();
+            $('#followingcolumn').empty();
+            $('#followercolumn').empty();
         }
 
         function populateTweets() { //fix for reseting sockets
@@ -70,12 +97,12 @@
                 });
         };
 
-        function populateCurrentFollowers() {
-            fetch("/user/" + currentUser + "/followers", {
+        function populateCurrentFollowers(username) {
+            fetch("/user/" + username + "/followers", {
                 method: "GET"
             }).then(res => res.json())
             .then(data => {
-                data.items.forEach(item => {
+                data.users.forEach(item => {
                     addFollower(item);
                 });
             }).catch(err => {
@@ -83,17 +110,21 @@
             });
         }
 
-        function populateCurrentFollowing() {
-            fetch("/user/" + currentUser + "/following", {
+        function populateCurrentFollowing(username) {
+            fetch("/user/" + username + "/following", {
                 method: "GET"
             }).then(res => res.json())
             .then(data => {
-                data.items.forEach(item => {
+                data.users.forEach(item => {
                     addFollowing(item);
                 });
             }).catch(err => {
                 console.error('Error: ', err);
             });
+        }
+
+        function populateCurrentProfile(username) {
+
         }
 
         function addTweet(tweet) {
@@ -123,9 +154,20 @@
             var newFollower =
                 `<div class="container">
                     <div class="tweet-content">
-                        ${tweet}
+                        <div class="following">
+                            <div class="following-img>
+                                    <i class="fas fa-user fa-2x" style="display: inline-block;
+                            border-radius: 2px;
+                            border: 2px solid white;
+                            background: #222;
+                            padding: 0.2em 0.3em;"></i>
+                            </div>
+                            <div class="following-text">
+                                ${tweet}
+                            </div>
                         </div>
-                '</div>`;
+                    </div>
+                </div>`;
             $(newFollower).appendTo($('#followercolumn'));
         }
 
@@ -133,9 +175,20 @@
             var newFollowing =
                 `<div class="container">
                     <div class="tweet-content">
-                        ${tweet}
+                        <div class="following">
+                            <div class="following-img>
+                                    <i class="fas fa-user fa-2x" style="display: inline-block;
+                            border-radius: 2px;
+                            border: 2px solid white;
+                            background: #222;
+                            padding: 0.2em 0.3em;"></i>
+                            </div>
+                            <div class="following-text">
+                                ${tweet}
+                            </div>
                         </div>
-                '</div>`;
+                    </div>
+                </div>`;
             $(newFollowing).appendTo($('#followingcolumn'));
         }
 
@@ -154,24 +207,25 @@
             }).then(res => res.json())
                 .then(data => {
                     console.log(data);
-                    emptyList();
-                    populateTweets();
-                    getItemToModal(data.id);
-                    redirect({
-                        url: "/",
-                        method: "get"
-                    });
+                    search($("#currentUserName").text());
+                    // redirect({
+                    //     url: "/",
+                    //     method: "get"
+                    // });
                 }).catch(err => {
                     console.error('Error: ', err);
                 });
         }
 
-        function search() {
+        function search(user) {
             emptyList();
             let timestamp = $('#time').val();
             let limit = $('#limit').val();
             let query = $('#query').val();
-            let username = $('#usernameSearch').val();
+            let username = user;
+            if(!username) {
+                username = $('#usernameSearch').val();
+            }
             let following = document.getElementById("followingSearch").checked;
             var data = {
                 timestamp: timestamp,
@@ -209,7 +263,7 @@
         }
 
         function getUser() {
-            getUserToModal($('#userID').val());
+            displayProfile($('#userID').val());
         }
 
         function followUser() {
@@ -309,7 +363,7 @@
                     } else {
                         $('#login').show();
                         $('#signout').hide();
-                        currentUser = null;
+                        return null;
                     }
                 }).catch(err => {
                     console.error('Error: ', err);
@@ -375,6 +429,8 @@
             }).then(res => {
                 console.log("res", res);
                 if (res.status === 200) {
+                    currentUser = username;
+                    displayProfile(username);
                     redirect({
                         url: "/",
                         method: "get"
@@ -429,7 +485,7 @@
                     </div>
                     <div class="control">
                         <input class="button is-info twitter-input-submit" value="View Profile" type="submit" id="searchidbtn"
-                            onclick="getUser();">
+                            onclick="getUser()">
                     </div>
                 </div>
             </div>
@@ -556,7 +612,27 @@
             </div>
         </div>
     </nav>
-    <div class="tile is-ancestor content-wrapper">
+    <div id="prompt">
+        <div class="prompt-container">
+        <div class="shape__container">
+            <div class="shape">
+                <div class="customer__picture">
+                <img class=""
+                    src="./images/logo2.png" alt=""
+                />
+                </div>
+                <div class="text">
+                <img class="logo-img" src="https://purepng.com/public/uploads/large/purepng.com-fortnite-dabfortnitefortnite-battle-royalebattle-royaleepic-gamesgames-1251525434679vsblg.png" alt=""/>
+                <p>
+                    <a id="showModal2" class="logo-btn">Get Your Yeet On</a>
+                </p>
+                </div>
+            </div>
+            <div class="shape__shadow"></div>
+            </div>
+            </div>
+    </div>
+    <div id="profile" class="tile is-ancestor content-wrapper">
         <div class="tile is-3 is-vertical side-modals">
             <div class="tile is-child profile-modal">
                 <div class="profile-header">
@@ -565,8 +641,8 @@
                             border: 2px solid white;
                             background: #222;
                             padding: 0.2em 0.3em;"></i>
-                    <p class="profile-title">Chad</p>
-                    <p class="profile-subtitle">@chads</p>
+                    <p id="currentUserName" class="profile-title">Chad</p>
+                    <p id="currentUserHandle" class="profile-subtitle">@chads</p>
                 </div>
                 <br />
                 <nav class="level">
@@ -589,7 +665,7 @@
                         </div>
                     </div>
                 </nav>
-                <nav class="level">
+                <nav id="yeetBox" class="level">
                     <div class="tweet-compose">
                         <!--<form action="/additem/" method="POST">-->
                         <textarea id="yeettext" name="content" rows="2" class="tweet-textarea" placeholder="What's happening?"></textarea>
@@ -681,7 +757,7 @@
                                 </div>
                             </div>
                         </article>
-                        <article class="media">
+                        <article id="followBox" class="media">
                             <div class="navbar-item">
                                 <div class="field has-addons twitter-control">
                                     <div class="control">
