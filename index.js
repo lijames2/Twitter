@@ -195,77 +195,83 @@ app.post('/additem', function (req, res) {
             media: req.body.media
         };
         console.log(tweet);
-        //if tweet has a parent, get it
+        //if tweet has a parent, increment retweet count by 1
         if (parent) {
             db.incrementRetweetedCount(parent, (err, result) => {
-
+                if (err) {
+                    res.status(500).send({
+                        status: "error",
+                        id: id,
+                        error: err
+                    });
+                }
+                else {
+                    db.addTweet(tweet, (err, result) => {
+                        if (err) {
+                            res.status(500).send({
+                                status: "error",
+                                id: id,
+                                error: err
+                            });
+                        }
+                        else if (result == 1) {
+                            res.status(200).send({
+                                status: "OK",
+                                id: id,
+                                error: null
+                            });
+                            // res.status(200);
+                            // res.redirect('/logout');
+                        }
+                        else {
+                            res.status(500).send({
+                                status: "error",
+                                id: id,
+                                error: err
+                            });
+                        }
+                    })
+                }
             });
         }
-
-        db.addTweet(tweet, (err, result) => {
-            if (err) {
-                res.status(500).send({
-                    status: "error",
-                    id: id,
-                    error: err
-                });
-            }
-            else if (result == 1) {
-                res.status(200).send({
-                    status: "OK",
-                    id: id,
-                    error: null
-                });
-                // res.status(200);
-                // res.redirect('/logout');
-            }
-            else {
-                res.status(500).send({
-                    status: "error",
-                    id: id,
-                    error: err
-                });
-            }
-        })
     }
 })
 
-app.post('/addmedia', mediaPath.single('mediaFile'), function (req, res) {
+app.post('/addmedia', mediaPath.single('content'), function (req, res) {
     //console.log(req);
-    if (req.file) {
-        console.log('Uploading file...');
-        var filename = req.file.filename;
-        var uploadStatus = 'File Uploaded Successfully';
-        console.log(filename);
-        res.status(200).send({
-            status: "OK",
-            id: filename,
-            error: null
-        });
-        //res.sendFile(__dirname + "/" + "twitter.html");
-    } else {
-        console.log('No File Uploaded');
-        var filename = 'FILE NOT UPLOADED';
-        var uploadStatus = 'File Upload Failed';
-        //res.sendFile(__dirname + "/" + "twitter.html");
-        res.status(500).send({
-            status: "error",
-            error: null
-        });
-    }
-    /*
+    
     if (!req.session.loggedin) {
         res.status(500).send({
             status: "error",
-            id: "",
-            error: err
+            error: "not logged in"
         });
     }
     else {
-
+        
+        if (req.file) {
+            var filename = req.file.filename;
+            console.log(filename);
+            res.status(200).send({
+                status: "OK",
+                id: filename,
+                err: null
+            });
+        } else {
+            console.log('No File Uploaded');
+            res.status(500).send({
+                status: "error",
+                err: 'No File Uploaded'
+            });
+        }
     }
-    */
 })
+
+app.get('/media/:id', function (req, res) {
+    let id = req.params.id;
+    console.log(`Getting media ${id}`);
+    res.sendFile(__dirname + "/media/" + id);
+})
+
 app.get('/item/:id', function (req, res) {
     let id = parseInt(req.params.id);
     console.log(`Getting item ${id}`);
@@ -273,7 +279,7 @@ app.get('/item/:id', function (req, res) {
         if (err) {
             res.status(500).send({
                 status: "error",
-                error: err
+                error: "Not logged in"
             });
         } else {
             if (result) {

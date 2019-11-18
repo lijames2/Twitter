@@ -53,11 +53,15 @@
         }
 
         function uploadMedia() {
-            var form = document.getElementById("mediaForm");
-            var formData = new FormData(form);
+            //var form = document.getElementById("mediaForm");
+            //var formData = new FormData(form);
+            //var med = $('input[type=file]').val()
+            const input = document.getElementById('media');
+            let form = new FormData();
+            form.append('content', input.files[0]);
             fetch('/addmedia', {
                     method: 'POST',
-                    body: formData
+                    body: form
                 }).then(res => res.json())
                 .then(data => {
                     alert("Success! Your media ID is : " + mediaID);
