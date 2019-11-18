@@ -266,6 +266,12 @@ app.post('/addmedia', mediaPath.single('content'), function (req, res) {
     }
 })
 
+app.get('/media/:id', function (req, res) {
+    let id = req.params.id;
+    console.log(`Getting media ${id}`);
+    res.sendFile(__dirname + "/media/" + id);
+})
+
 app.get('/item/:id', function (req, res) {
     let id = parseInt(req.params.id);
     console.log(`Getting item ${id}`);
