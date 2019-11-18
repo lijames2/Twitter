@@ -2,7 +2,7 @@ const sqlite3 = require('sqlite3');
 const path = require('path')
 
 // Open database
-let db = new sqlite3.Database('public/twitter.db', sqlite3.OPEN_READWRITE, (err) => {
+let db = new sqlite3.Database('twitter.db', sqlite3.OPEN_READWRITE, (err) => {
     if (err) {
         console.error(err.message);
     }
@@ -222,5 +222,45 @@ module.exports = {
                 });
             }
         });
-    }
+    },
+    incrementRetweetedCount: function (id, callback) {
+        const incrementRetweetedQuery = 'UPDATE Tweets SET retweeted=retweeted+1 WHERE id=?';
+        db.run(incrementRetweetedQuery, [id], (err, result) => {
+            if (err) {
+                callback(err);
+            } else {
+                callback(null, result);
+            }
+        });
+    },
+    decrementRetweetedCount: function (id, callback) {
+        const decrementRetweetedQuery = 'UPDATE Tweets SET retweeted=retweeted-1 WHERE id=?';
+        db.run(decrementRetweetedQuery, [id], (err, result) => {
+            if (err) {
+                callback(err);
+            } else {
+                callback(null, result);
+            }
+        });
+    },
+    incrementLikesCount: function (id, callback) {
+        const incrementLikesQuery = 'UPDATE Tweets SET likes=likes+1 WHERE id=?';
+        db.run(incrementLikesQuery, [id], (err, result) => {
+            if (err) {
+                callback(err);
+            } else {
+                callback(null, result);
+            }
+        });
+    },
+    decrementLikesCount: function (id, callback) {
+        const decrementLikesQuery = 'UPDATE Tweets SET likes=likes-1 WHERE id=?';
+        db.run(decrementLikesQuery, [id], (err, result) => {
+            if (err) {
+                callback(err);
+            } else {
+                callback(null, result);
+            }
+        });
+    },
 };

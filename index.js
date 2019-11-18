@@ -9,6 +9,8 @@ var urlencodedParser = bodyParser.urlencoded({ extended: true })
 const db = require('./db.js');
 const nodemailer = require('nodemailer');
 var cookieParser = require('cookie-parser');
+const multer = require('multer');
+const mediaPath = multer({ dest: './media/' });
 
 app.use(cookieParser());
 
@@ -38,7 +40,7 @@ app.get('/current', function (req, res) {
         info.loggedin = false;
     }
     res.send(info);
-}) 
+})
 
 app.get('/login', function (req, res) {
     res.sendFile(__dirname + "/" + "index.html");
@@ -187,13 +189,19 @@ app.post('/additem', function (req, res) {
         let tweet = {
             id: id,
             username: req.session.username,
-            originalUsername: "null",
             content: req.body.content,
-            parent: 0,
-            childType: "null",
-            media: "null"
+            parent: req.body.parent,
+            childType: req.body.childType,
+            media: req.body.media
         };
         console.log(tweet);
+        //if tweet has a parent, get it
+        if (parent) {
+            db.incrementRetweetedCount(parent, (err, result) => {
+
+            });
+        }
+
         db.addTweet(tweet, (err, result) => {
             if (err) {
                 res.status(500).send({
@@ -222,6 +230,42 @@ app.post('/additem', function (req, res) {
     }
 })
 
+app.post('/addmedia', mediaPath.single('mediaFile'), function (req, res) {
+    //console.log(req);
+    if (req.file) {
+        console.log('Uploading file...');
+        var filename = req.file.filename;
+        var uploadStatus = 'File Uploaded Successfully';
+        console.log(filename);
+        res.status(200).send({
+            status: "OK",
+            id: filename,
+            error: null
+        });
+        //res.sendFile(__dirname + "/" + "twitter.html");
+    } else {
+        console.log('No File Uploaded');
+        var filename = 'FILE NOT UPLOADED';
+        var uploadStatus = 'File Upload Failed';
+        //res.sendFile(__dirname + "/" + "twitter.html");
+        res.status(500).send({
+            status: "error",
+            error: null
+        });
+    }
+    /*
+    if (!req.session.loggedin) {
+        res.status(500).send({
+            status: "error",
+            id: "",
+            error: err
+        });
+    }
+    else {
+
+    }
+    */
+})
 app.get('/item/:id', function (req, res) {
     let id = parseInt(req.params.id);
     console.log(`Getting item ${id}`);
@@ -353,57 +397,6 @@ app.post('/search', function (req, res) {
             }
         })
     }
-
-    /*
-        db.search(timestamp, limit, req.body.q, req.body.username, (err, result) => {
-            if (err) {
-                res.status(500).send({
-                    status: "error",
-                    error: err
-                });
-            } else {
-                //console.log(result);
-                console.log(req.session);
-                ////if logged in and either following not specific or specified as yes, filter tweets
-                if (req.session.loggedin && (typeof req.body.following === 'undefined' || req.body.following)) {
-                    console.log('a');
-                    //console.log(result);
-                    let following = [];
-                    let filteredResult = [];
-                    db.getFollowing(req.session.username, 99999, (err, users) => {
-                        if (err) {
-                            res.status(500).send({
-                                status: "error",
-                                error: err
-                            });
-                        } else {
-                            users.forEach(user => {
-                                following.push(user.User);
-                            });
-                            result.forEach(tweet => {
-                                if (following.includes(tweet.username)) {
-                                    filteredResult.push(tweet);
-                                }
-                            });
-                            res.status(200).send({
-                                status: "OK",
-                                error: null,
-                                items: filteredResult
-                            })
-                        }
-                    });
-                }
-                else {
-                    console.log('b');
-                    res.status(200).send({
-                        status: "OK",
-                        error: null,
-                        items: result
-                    })
-                }
-            }
-        })
-        */
 })
 
 app.get('/user/:username', function (req, res) {
