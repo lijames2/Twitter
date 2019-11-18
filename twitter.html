@@ -53,21 +53,18 @@
         }
 
         function uploadMedia() {
-            //var form = document.getElementById("mediaForm");
-            //var formData = new FormData(form);
-            //var med = $('input[type=file]').val()
-            const input = document.getElementById('media');
-            let form = new FormData();
-            form.append('content', input.files[0]);
-            fetch('/addmedia', {
+            var form = document.getElementById("mediaForm");
+            var formData = new FormData(form);
+            fetch("/addmedia", {
                     method: 'POST',
-                    body: form
+                    body: formData
                 }).then(res => res.json())
                 .then(data => {
-                    alert("Success! Your media ID is : " + data.id);
+                    console.log(data.id);
+                    getMediaToModal(data.id);
                 }).catch(err => {
+                    alert("Error uploading file : " + err);
                     console.error('Error: ', err);
-                    alert("Error in uploading file : " + err);
             });
         }
 
@@ -315,6 +312,10 @@
                 });
         }
 
+        function getMediaToModal(mediaID) {
+            alert("Success! Your media ID is : " + mediaID);
+        }
+       
         function getLoggedInfo() {
             fetch(`/current`, {
                     method: "GET"
