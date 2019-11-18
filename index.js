@@ -239,27 +239,28 @@ app.post('/additem', function (req, res) {
 
 app.post('/addmedia', mediaPath.single('content'), function (req, res) {
     //console.log(req);
+    
     if (!req.session.loggedin) {
         res.status(500).send({
             status: "error",
-            id: "",
-            error: err
+            error: "not logged in"
         });
     }
     else {
+        
         if (req.file) {
             var filename = req.file.filename;
             console.log(filename);
             res.status(200).send({
                 status: "OK",
                 id: filename,
-                error: null
+                err: null
             });
         } else {
             console.log('No File Uploaded');
             res.status(500).send({
                 status: "error",
-                error: null
+                err: 'No File Uploaded'
             });
         }
     }
@@ -272,7 +273,7 @@ app.get('/item/:id', function (req, res) {
         if (err) {
             res.status(500).send({
                 status: "error",
-                error: err
+                error: "Not logged in"
             });
         } else {
             if (result) {

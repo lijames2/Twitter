@@ -53,15 +53,19 @@
         }
 
         function uploadMedia() {
-            var form = document.getElementById("mediaForm");
-            var formData = new FormData(form);
+            //var form = document.getElementById("mediaForm");
+            //var formData = new FormData(form);
+            //var med = $('input[type=file]').val()
+            const input = document.getElementById('media');
+            let form = new FormData();
+            form.append('content', input.files[0]);
             fetch('/addmedia', {
                     method: 'POST',
-                    body: formData
+                    body: form
                 }).then(res => res.json())
                 .then(data => {
                     console.log(data.id);
-                }).catch(err => {
+                }).catch(error => {
                     console.error('Error: ', err);
                 });
         }
@@ -733,11 +737,6 @@
                             <input type="file" name="mediaFile" id="media" required />
                             <input type="submit" value="Upload" />
                         </form>
-                        <form action="/addmedia" enctype="multipart/form-data" method="POST">
-                            <input type="file" name="mediaFile" id="media" required />
-                            <input type="submit" value="Upload" />
-                        </form>
-
                     </div>
                 </div>
             </div>
