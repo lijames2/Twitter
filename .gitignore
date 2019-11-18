@@ -1,3 +1,5 @@
 node_modules
 node_modules
 twitter.db
+/media
+public/twitter.db
