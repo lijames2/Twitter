@@ -96,12 +96,12 @@ app.post('/adduser', urlencodedParser, function (req, res) {
                 }).catch(function (error) {
 
                 });
-            // res.status(200).send({
-            //     status: "OK",
-            //     error: null
-            // });
-            res.status(200);
-            res.redirect('/');
+            res.status(200).send({
+                status: "OK",
+                error: null
+            });
+            // res.status(200);
+            // res.redirect('/');
         }
     });
 })
@@ -112,12 +112,12 @@ app.post('/verify', function (req, res) {
 
     db.verify(email, key, (err, result) => {
         if (result == 1) {
-            // res.status(200).send({
-            //     status: "OK",
-            //     error: null
-            // });
-            res.status(200);
-            res.redirect('/');
+            res.status(200).send({
+                status: "OK",
+                error: null
+            });
+            // res.status(200);
+            // res.redirect('/');
         }
         else {
             res.status(500).send({
@@ -159,12 +159,12 @@ app.post('/login', function (req, res) {
 app.post('/logout', function (req, res) {
     if (req.session.loggedin) {
         res.clearCookie('user_sid');
-        // res.status(200).send({
-        //     status: "OK",
-        //     error: null
-        // });
-        res.status(200);
-        res.redirect('/');
+        res.status(200).send({
+            status: "OK",
+            error: null
+        });
+        // res.status(200);
+        // res.redirect('/');
     } else {
         res.status(500).send({
             status: "error",
@@ -203,13 +203,13 @@ app.post('/additem', function (req, res) {
                 });
             }
             else if (result == 1) {
-                // res.status(200).send({
-                //     status: "OK",
-                //     id: id,
-                //     error: null
-                // });
-                res.status(200);
-                res.redirect('/logout');
+                res.status(200).send({
+                    status: "OK",
+                    id: id,
+                    error: null
+                });
+                // res.status(200);
+                // res.redirect('/logout');
             }
             else {
                 res.status(500).send({

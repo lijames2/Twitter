@@ -157,6 +157,10 @@
                     emptyList();
                     populateTweets();
                     getItemToModal(data.id);
+                    redirect({
+                        url: "/",
+                        method: "get"
+                    });
                 }).catch(err => {
                     console.error('Error: ', err);
                 });
