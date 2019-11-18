@@ -53,19 +53,23 @@
         }
 
         function uploadMedia() {
-            var form = document.getElementById("mediaForm");
-            var formData = new FormData(form);
-            fetch("/addmedia", {
+            //var form = document.getElementById("mediaForm");
+            //var formData = new FormData(form);
+            //var med = $('input[type=file]').val()
+            const input = document.getElementById('media');
+            let form = new FormData();
+            form.append('content', input.files[0]);
+            fetch('/addmedia', {
                     method: 'POST',
-                    body: formData
+                    body: form
                 }).then(res => res.json())
                 .then(data => {
-                    console.log(data.id);
+                    console.log(data);
                     getMediaToModal(data.id);
-                }).catch(err => {
-                    alert("Error uploading file : " + err);
+                }).catch(error => {
+                    alert("Error uploading media : " + err);
                     console.error('Error: ', err);
-            });
+                });
         }
 
         function populateTweets() { //fix for reseting sockets
@@ -217,6 +221,7 @@
         }
 
         function getTweet() {
+            //console.log($('#searchID').val)
             getItemToModal($('#searchID').val());
         }
 
@@ -315,7 +320,7 @@
         function getMediaToModal(mediaID) {
             alert("Success! Your media ID is : " + mediaID);
         }
-       
+
         function getLoggedInfo() {
             fetch(`/current`, {
                     method: "GET"
@@ -457,6 +462,20 @@
                 </div>
             </div>
 
+            <!-- <div class="navbar-item">
+                <div class="field has-addons twitter-control">
+                    <div class="control">
+                        <input name="timestamp" id="time" class="input twitter-input" type="text" placeholder="Input epoch time">
+                    </div>
+                    <div class="control">
+                        <input name="limit" id="limit" class="input twitter-input" type="text" placeholder="Input query limit">
+                    </div>
+                    <div class="control">
+                        <input class="button is-info twitter-input-submit" value="Search" type="submit" id="searchBtn"
+                            onclick="search();">
+                    </div>
+                </div>
+            </div> -->
             <div class="navbar-item">
                 <div id='search' class="navbar-item">
                     <a id="showSearchModal" class="link-button">Advanced Search</a>
@@ -541,11 +560,11 @@
 
                                 <form action="/signup/" method="GET">
                                     <h6 class="login-subtitle">New to Yeeter? <input type="submit" class="link-button"
-                                            value="Sign up now »" /></h6>
+                                            value="Sign up now Â»" /></h6>
                                 </form>
                                 <form action="/verify/" method="GET">
                                     <h6 class="login-subtitle">Already signed up? <input type="submit"
-                                            class="link-button" value="Verify your account »" /></h6>
+                                            class="link-button" value="Verify your account Â»" /></h6>
                                 </form>
                             </div>
                             <br />
@@ -719,13 +738,13 @@
                             </div>
                         </article>
 
-                        <form action="javascript:uploadMedia();" id="mediaForm" enctype="multipart/form-data" method="POST">
-                            <input type="file" name="mediaFile" id="media" required>
-                            <input type="submit" value="Upload">
+                        <form action="javascript:uploadMedia();" id="mediaForm" enctype="multipart/form-data"
+                            method="POST">
+                            <input type="file" name="mediaFile" id="media" required />
+                            <input type="submit" value="Upload" />
                         </form>
-
                     </div>
-                </div>  
+                </div>
             </div>
             <div class="tile trending-modal">
 
