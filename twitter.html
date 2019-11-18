@@ -60,10 +60,10 @@
                     body: formData
                 }).then(res => res.json())
                 .then(data => {
-                    console.log(data.id);
+                    alert("Success! Your media ID is : " + mediaID);
                 }).catch(err => {
                     console.error('Error: ', err);
-                });
+            });
         }
 
         function populateTweets() { //fix for reseting sockets
@@ -215,7 +215,6 @@
         }
 
         function getTweet() {
-            //console.log($('#searchID').val)
             getItemToModal($('#searchID').val());
         }
 
@@ -452,20 +451,6 @@
                 </div>
             </div>
 
-            <!-- <div class="navbar-item">
-                <div class="field has-addons twitter-control">
-                    <div class="control">
-                        <input name="timestamp" id="time" class="input twitter-input" type="text" placeholder="Input epoch time">
-                    </div>
-                    <div class="control">
-                        <input name="limit" id="limit" class="input twitter-input" type="text" placeholder="Input query limit">
-                    </div>
-                    <div class="control">
-                        <input class="button is-info twitter-input-submit" value="Search" type="submit" id="searchBtn"
-                            onclick="search();">
-                    </div>
-                </div>
-            </div> -->
             <div class="navbar-item">
                 <div id='search' class="navbar-item">
                     <a id="showSearchModal" class="link-button">Advanced Search</a>
@@ -728,18 +713,13 @@
                             </div>
                         </article>
 
-                        <form action="javascript:uploadMedia();" id="mediaForm" enctype="multipart/form-data"
-                            method="POST">
-                            <input type="file" name="mediaFile" id="media" required />
-                            <input type="submit" value="Upload" />
-                        </form>
-                        <form action="/addmedia" enctype="multipart/form-data" method="POST">
-                            <input type="file" name="mediaFile" id="media" required />
-                            <input type="submit" value="Upload" />
+                        <form action="javascript:uploadMedia();" id="mediaForm" enctype="multipart/form-data" method="POST">
+                            <input type="file" name="mediaFile" id="media" required>
+                            <input type="submit" value="Upload">
                         </form>
 
                     </div>
-                </div>
+                </div>  
             </div>
             <div class="tile trending-modal">
 
