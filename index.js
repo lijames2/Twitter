@@ -63,6 +63,7 @@ app.get('/logout', function (req, res) {
 })
 
 app.post('/adduser', urlencodedParser, function (req, res) {
+    console.log(req.body);
     var username = req.body.username;
     var password = req.body.password;
     var email = req.body.email;
@@ -77,6 +78,7 @@ app.post('/adduser', urlencodedParser, function (req, res) {
         }
         else {
             //SEND EMAIL
+            /*
             let transporter = nodemailer.createTransport({
                 service: 'gmail',
                 auth: {
@@ -84,34 +86,85 @@ app.post('/adduser', urlencodedParser, function (req, res) {
                     pass: 'cse356-cloud',
                 }
             });
+            */
+            /*
+             var transporter = nodemailer.createTransport({
+                 host: '127.0.0.1',
+                 port: 25,
+                 secure: false,
+                 tls:{
+                     rejectUnauthorized: false
+                 }
+             });
+ 
+             let mailOptions = {
+                 from: 'chad@chads.cse356.compas.cs.stonybrook.edu',
+                 to: email,
+                 subject: 'Verify your email.',
+                 text: 'validation key: ' + '<' + key + '>',
+             };
+ 
+             transporter.sendMail(mailOptions)
+                 .then(function (response) {
+                     res.status(200).send({
+                         status: "OK",
+                         error: null
+                     });
+                 }).catch(function (err) {
+                     res.status(500).send({
+                         status: "error",
+                         error: err
+                     });
+                 });
+             */
+            var smtpTransport = nodemailer.createTransport({
+                host: '127.0.0.1',
+                port: 25,
+                secure: false, // use SSL
+                tls: {
+                    rejectUnauthorized: false
+                }
+            });
 
-            let mailOptions = {
-                from: 'cloud356ttt@gmail.com',
+            //Message
+            var message = {
+                from: "ubuntu@chads.cse356.compas.cs.stonybrook.edu",
                 to: email,
                 subject: 'Verify your email.',
                 text: 'validation key: ' + '<' + key + '>',
             };
 
-            transporter.sendMail(mailOptions)
-                .then(function (response) {
-
-                }).catch(function (error) {
-
+            console.log('Sending Mail');
+            // Send mail
+            smtpTransport.sendMail(message, function (error, info) {
+                if (error) {
+                    console.log(error);
+                    res.status(500).send({
+                        status: "error",
+                        error: error
+                    });
+                } else {
+                    console.log('Message sent successfully!');
+                    console.log('Server responded with "%s"', info.response);
+                }
+                console.log('Closing Transport');
+                smtpTransport.close();
+                res.status(200).send({
+                    status: "OK"
                 });
-            res.status(200).send({
-                status: "OK",
-                error: null
             });
             // res.status(200);
             // res.redirect('/');
+
         }
     });
 })
 
 app.post('/verify', function (req, res) {
+    console.log('VERIFICATION')
     var email = req.body.email;
     var key = req.body.key;
-    
+
 
     db.verify(email, key, (err, result) => {
         if (result == 1) {
@@ -710,7 +763,7 @@ app.get('/user/:username/following', function (req, res) {
     })
 });
 
-app.get('/isLiked/:tweetId', function(req, res) {
+app.get('/isLiked/:tweetId', function (req, res) {
     let username = req.session.username;
     let tweetId = req.params.tweetId;
     console.log(username + " " + tweetId);
@@ -721,7 +774,7 @@ app.get('/isLiked/:tweetId', function(req, res) {
                 error: err
             });
         } else {
-            if(result) {
+            if (result) {
                 res.status(200).send({
                     status: "OK",
                     liked: true
