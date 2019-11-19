@@ -115,8 +115,7 @@ app.post('/verify', function (req, res) {
     db.verify(email, key, (err, result) => {
         if (result == 1) {
             res.status(200).send({
-                status: "OK",
-                error: null
+                status: "OK"
             });
             // res.status(200);
             // res.redirect('/');
@@ -124,7 +123,7 @@ app.post('/verify', function (req, res) {
         else {
             res.status(500).send({
                 status: "error",
-                error: err
+                error: "invlid verification"
             });
         }
     });
@@ -138,21 +137,21 @@ app.post('/login', function (req, res) {
     db.login(username, password, (err, result) => {
         if (err) {
             res.status(500).send({
-                success: false
+                status: "error",
+                error: 'err'
             });
         }
         else if (result == 1) {
             req.session.loggedin = true;
             req.session.username = username;
             res.status(200).send({
-                status: "OK",
-                error: null
+                status: "OK"
             });
         }
         else {
             res.status(500).send({
                 status: "error",
-                error: err
+                error: "WRONG LOGIN"
             });
         }
     });

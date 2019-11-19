@@ -30,7 +30,7 @@ module.exports = {
                 db.get('SELECT verified FROM User WHERE email=?', [email], (err, result) => {
                     if (err) {
                         callback(null, 0);
-                    } else if (result.verified === 1) {
+                    } else if (result && result.verified === 1) {
                         callback(null, 1);
                     } else {
                         callback(null, 0);
