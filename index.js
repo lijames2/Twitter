@@ -177,7 +177,7 @@ app.post('/logout', function (req, res) {
 
 app.post('/additem', function (req, res) {
     if (!req.session.loggedin) {
-    //if (false) {
+        //if (false) {
         res.status(500).send({
             status: "error",
             id: "",
@@ -222,7 +222,7 @@ app.post('/additem', function (req, res) {
                 if (req.body.media && mediaValid == true) {
                     tweet.media = req.body.media.toString();
                 }
-                else if (mediaValid == false){
+                else if (mediaValid == false) {
                     res.status(500).send({
                         status: "error",
                         error: 'media file invalid'
@@ -328,6 +328,12 @@ app.get('/item/:id', function (req, res) {
             });
         } else {
             if (result) {
+                let media = result.media.split(",");
+                result.media = media;
+                let property = {
+                    likes : result.likes
+                }
+                result.property = property;
                 res.status(200).send({
                     status: "OK",
                     item: result,
@@ -336,7 +342,7 @@ app.get('/item/:id', function (req, res) {
             } else {
                 res.status(500).send({
                     status: "error",
-                    error: err
+                    error: 'tweet not found'
                 });
             }
         }
