@@ -176,7 +176,8 @@ app.post('/logout', function (req, res) {
 })
 
 app.post('/additem', function (req, res) {
-    if (!req.session.loggedin) {
+    //if (!req.session.loggedin) {
+    if (false) {
         res.status(500).send({
             status: "error",
             id: "",
@@ -185,19 +186,29 @@ app.post('/additem', function (req, res) {
     }
     else {
         let id = Math.floor((Math.random() * 1000000000) + 1);
-        console.log(req.body);
+        //console.log(req.body);
         let tweet = {
             id: id,
-            username: req.session.username,
+            username: 'red',
+            originalUsername: "null",
             content: req.body.content,
-            parent: req.body.parent,
-            childType: req.body.childType,
-            media: req.body.media
+            parent: 0,
+            childType: "null",
+            media: "null"
         };
+        if (req.body.parent) {
+            tweet.parent = req.body.parent;
+        }
+        if (req.body.childType) {
+            tweet.childType = req.body.childType;
+        }
+        if (req.body.media) {
+            tweet.media = req.body.media.toString();
+        }
         console.log(tweet);
         //if tweet has a parent, increment retweet count by 1
-        if (parent) {
-            db.incrementRetweetedCount(parent, (err, result) => {
+        if (tweet.parent) {
+            db.incrementRetweetedCount(tweet.parent, (err, result) => {
                 if (err) {
                     res.status(500).send({
                         status: "error",
@@ -205,41 +216,37 @@ app.post('/additem', function (req, res) {
                         error: err
                     });
                 }
-                else {
-                    db.addTweet(tweet, (err, result) => {
-                        if (err) {
-                            res.status(500).send({
-                                status: "error",
-                                id: id,
-                                error: err
-                            });
-                        }
-                        else if (result == 1) {
-                            res.status(200).send({
-                                status: "OK",
-                                id: id,
-                                error: null
-                            });
-                            // res.status(200);
-                            // res.redirect('/logout');
-                        }
-                        else {
-                            res.status(500).send({
-                                status: "error",
-                                id: id,
-                                error: err
-                            });
-                        }
-                    })
-                }
             });
         }
+        db.addTweet(tweet, (err, result) => {
+            if (err) {
+                res.status(500).send({
+                    status: "error",
+                    id: id,
+                    error: err
+                });
+            }
+            else if (result == 1) {
+                res.status(200).send({
+                    status: "OK",
+                    id: id,
+                    error: null
+                });
+            }
+            else {
+                res.status(500).send({
+                    status: "error",
+                    id: id,
+                    error: err
+                });
+            }
+        });
     }
 })
 
 app.post('/addmedia', mediaPath.single('content'), function (req, res) {
     //console.log(req);
-    
+
     if (!req.session.loggedin) {
         res.status(500).send({
             status: "error",
@@ -247,7 +254,7 @@ app.post('/addmedia', mediaPath.single('content'), function (req, res) {
         });
     }
     else {
-        
+
         if (req.file) {
             var filename = req.file.filename;
             console.log(filename);
