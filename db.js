@@ -263,4 +263,36 @@ module.exports = {
             }
         });
     },
+    addMedia: function (username, mediaid, callback) {
+        const followQuery = 'INSERT INTO Media(username,mediaid) VALUES(?,?)';
+        db.run(followQuery, [username, mediaid], (err, result) => {
+            if (err) {
+                callback(err);
+            } else {
+                callback(null, result);
+            }
+        });
+    },
+    //returns array of tweets using media
+    mediaIDUsed: function (mediaID, callback) {
+        const followQuery = `SELECT * FROM Tweets WHERE media LIKE '%${mediaID}%'`;
+        db.all(followQuery, [username, mediaid], (err, result) => {
+            if (err) {
+                callback(err);
+            } else {
+                callback(null, result);
+            }
+        });
+    },
+    //returns username of user that uploaded media
+    mediaOwner: function (mediaID, callback) {
+        const followQuery = `SELECT username FROM Media WHERE mediaid=?`;
+        db.get(followQuery, [mediaid], (err, result) => {
+            if (err) {
+                callback(err);
+            } else {
+                callback(null, result);
+            }
+        });
+    },
 };
