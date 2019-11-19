@@ -111,6 +111,7 @@ app.post('/adduser', urlencodedParser, function (req, res) {
 app.post('/verify', function (req, res) {
     var email = req.body.email;
     var key = req.body.key;
+    
 
     db.verify(email, key, (err, result) => {
         if (result == 1) {
