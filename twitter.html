@@ -266,13 +266,21 @@
             if(!username) {
                 username = $('#usernameSearch').val();
             }
-            let following = document.getElementById("followingSearch").checked;
+            let following = document.getElementById("followingSearch").checked; 
+            let rank = $('#rankSearch').val();
+            let parent = $('#parentSearch').val();
+            let replies = document.getElementById("repliesSearch").checked;
+            let media = document.getElementById("mediaSearch").checked;
             var data = {
                 timestamp: timestamp,
                 limit: limit,
                 q: query,
                 username: username,
-                following: following
+                following: following,
+                rank : rank,
+                parent : parent,
+                replies : replies,
+                hasMedia : media
             }
             fetch("/search", {
                     method: "POST",
@@ -630,12 +638,12 @@
                                 </div>
                                 <div class="field">
                                     <label class="label">Rank</label>
-                                    <input id="rank" name="rank" class="input" type="text"
+                                    <input id="rankSearch" name="rankSearch" class="input" type="text"
                                         placeholder="'time' or 'interest' (default is interest)">
                                 </div>
                                 <div class="field">
                                     <label class="label">Parent</label>
-                                    <input id="parent" name="parent" class="input" type="text"
+                                    <input id="parentSearch" name="parentSearch" class="input" type="text"
                                         placeholder="Input item ID">
                                 </div>
                                 <div class="field">
