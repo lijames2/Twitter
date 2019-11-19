@@ -166,6 +166,7 @@ body {
 }
 
 .content-wrapper {
+    display: none !important;
     min-height: 90vh;
     padding: 15px;
     background-image: url('../images/cheap_diagonal_fabric.png');
@@ -369,3 +370,101 @@ body {
     color: whitesmoke;
     border-radius: 3px;
 }
+
+#prompt {
+    display: none;
+    min-height: 90vh;
+    padding: 15px;
+    justify-content: center;
+    align-items: center;
+    background-image: url('../images/cheap_diagonal_fabric.png');
+}
+
+.is-active {
+    display: flex !important;
+}
+
+.shape__container {
+    position: relative;
+    height: 400px;
+    width: 600px;
+  }
+  
+  .shape {
+    overflow: hidden;
+    display: flex;
+    flex-direction: row;
+    background: whitesmoke;
+    width: 600px;
+    height: 400px;
+    border-radius: 20px;
+    transform: skewX(5deg) skewY(5deg); /*Shorthand: skew(-5deg, -5deg);*/
+    box-shadow: 0px 5px 14px rgba(9, 33, 58, 0.7);
+  }
+  
+  .customer__picture {
+    text-align: center;
+    width: 50%;
+    height: 100%;
+    background: #1c94e0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .customer__picture img {
+
+    transform: skewX(-5deg) skewY(-5deg) scale(0.75); /*Shorthand: skew(5deg, 5deg) scale(1.15);*/
+  }
+  
+  .text {
+    font-family: "Hind", sans-serif;
+    font-size: 18px;
+    font-weight: 300;
+    line-height: 30px;
+    letter-spacing: 0.5px;
+    text-align: center;
+    color: #f4f4f4;
+    padding: 30px 10px;
+    margin-left: 30px;
+    transform: skewX(-5deg) skewY(-5deg); /*Shorthand: skew(5deg, 5deg);*/
+  }
+  
+  .text .logo-img {
+    margin-bottom: 10px;
+  }
+
+  .logo-img {
+      height: 80%;
+  }
+
+  .logo-btn {
+      text-transform: uppercase;
+      font-weight: bold;
+      font-size: 25px;
+      color: #222;
+      font-family: 'Alata', sans-serif;
+  }
+
+  .logo-btn:hover {
+      color: #657786;
+  }
+  
+  .shape__shadow {
+    position: absolute;
+    top: 0;
+    left: 0;
+    background: #f0f7ff;
+    width: 600px;
+    height: 400px;
+    border-radius: 30px;
+    transform: skewX(5deg) skewY(5deg) rotate(20deg); /*Shorthand: skew(-5deg, -5deg) rotate(-20deg);*/
+    z-index: -10;
+  }
+
+  .prompt-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100%;
+  }
