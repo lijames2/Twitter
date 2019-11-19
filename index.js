@@ -343,8 +343,8 @@ app.post('/addmedia', mediaPath.single('content'), function (req, res) {
         if (req.file) {
             var filename = req.file.filename;
             console.log(filename);
-
-            db.addMedia(req.session.username, filename, (err, result) => {
+            let timestamp = Math.floor((new Date()).getTime() / 1000);
+            db.addMedia(req.session.username, filename, timestamp, (err, result) => {
                 if (err) {
                     res.status(500).send({
                         status: "error",
@@ -371,8 +371,38 @@ app.post('/addmedia', mediaPath.single('content'), function (req, res) {
 
 app.get('/media/:id', function (req, res) {
     let id = req.params.id;
+    let nowtimestamp = Math.floor((new Date()).getTime() / 1000);
     console.log(`Getting media ${id}`);
-    res.sendFile(__dirname + "/media/" + id);
+    db.getMediaTime(id, (err, result) => {
+        console.log(result)
+        if (err) {
+            res.status(500).send({
+                status: "error",
+                error: "Media does not exist"
+            });
+        } else if (result.timestamp + 600 > nowtimestamp) {//if media was uploaded less than 10 mins ago
+            console.log('recency override');
+            res.sendFile(__dirname + "/media/" + id);
+        }
+        else {    //check if media belongs to some tweet
+            db.getMediaTweets(id, (err, result) => {
+                console.log(result)
+                if (err) {
+                    res.status(500).send({
+                        status: "error",
+                        error: "Not logged in"
+                    });
+                } else if (result) {
+                    res.sendFile(__dirname + "/media/" + id);
+                } else {
+                    res.status(400).send({
+                        status: "error",
+                        error: "Media deleted"
+                    });
+                }
+            })
+        }
+    })
 })
 
 app.get('/item/:id', function (req, res) {
@@ -423,6 +453,18 @@ app.delete('/item/:id', function (req, res) {
                     error: err
                 });
             } else {
+                let mediaIds = result.media.split(',');
+                mediaIds.forEach(mediaID => {
+                    db.setMediaTime(mediaID, 0, (err, result) => {
+                        if (err) {
+                            res.status(500).send({
+                                status: "error",
+                                error: err
+                            });
+                        }
+                    });
+                });
+
                 db.deleteTweet(id, (err, result) => {
                     if (err) {
                         res.status(500).send({

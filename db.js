@@ -281,9 +281,9 @@ module.exports = {
             }
         });
     },
-    addMedia: function (username, mediaid, callback) {
-        const addMediaQuery = 'INSERT INTO Media(username,mediaid) VALUES(?,?)';
-        db.run(addMediaQuery, [username, mediaid], (err, result) => {
+    addMedia: function (username, mediaid, timestamp, callback) {
+        const addMediaQuery = 'INSERT INTO Media(username,mediaid,timestamp) VALUES(?,?,?)';
+        db.run(addMediaQuery, [username, mediaid, timestamp], (err, result) => {
             if (err) {
                 callback(err);
             } else {
@@ -408,4 +408,34 @@ module.exports = {
             }
         });
     },
+    getMediaTweets: function (mediaID, callback) {
+        const gettMediaTweetsQuery = `SELECT * FROM Tweets WHERE media LIKE '%${mediaID}%'`;
+        db.get(gettMediaTweetsQuery, [], (err, result) => {
+            if (err) {
+                callback(err);
+            } else {
+                callback(null, result);
+            }
+        });
+    },
+    getMediaTime: function (mediaID, callback) {
+        const getMediaTimeQuery = `SELECT * FROM Media WHERE mediaid=?`;
+        db.get(getMediaTimeQuery, [mediaID], (err, result) => {
+            if (err) {
+                callback(err);
+            } else {
+                callback(null, result);
+            }
+        });
+    },
+    setMediaTime: function (mediaID, timestamp, callback) {
+        const setMediaTimeQuery = `UPDATE Media SET timestamp=? WHERE mediaid=?`;
+        db.get(setMediaTimeQuery, [timestamp, mediaID], (err, result) => {
+            if (err) {
+                callback(err);
+            } else {
+                callback(null, result);
+            }
+        });
+    }
 };
