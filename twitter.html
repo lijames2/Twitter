@@ -2,8 +2,11 @@
 
 <head>
     <title>Yeeter</title>
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.1/css/bulma.css"
         crossorigin="anonymous">
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css"
+        integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.2/animate.min.css">
     <link rel="icon" type="image/png" href="public/images/favicon.png">
     <link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
@@ -11,11 +14,11 @@
     <link rel="stylesheet" type="text/css" href="css/twitter.css">
     <link href="https://fonts.googleapis.com/css?family=Alata&display=swap" rel="stylesheet">
     <script>
-        var currentUser = getLoggedInfo();
-        var visiting = null;
+        var currentUser = null;
+        var visiting = "front";
 
         $(document).ready(function () {
-            promptSearch();
+            getLoggedInfo();
             $("#showModal").click(function () {
                 $("#loginModal").addClass("is-active");
             });
@@ -378,11 +381,11 @@
                         $('#currentUser').text(data.username);
                         $('#signout').show();
                         $('#login').hide();
-                        return data.username;
+                        displayProfile(data.username);
                     } else {
                         $('#login').show();
                         $('#signout').hide();
-                        return null;
+                        promptSearch();
                     }
                 }).catch(err => {
                     console.error('Error: ', err);
@@ -449,8 +452,6 @@
             }).then(res => {
                 console.log("res", res);
                 if (res.status === 200) {
-                    currentUser = username;
-                    displayProfile(username);
                     redirect({
                         url: "/",
                         method: "get"
