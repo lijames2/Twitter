@@ -19,6 +19,14 @@
 
         $(document).ready(function () {
             getLoggedInfo();
+            
+            const fileInput = document.getElementById('media');
+            fileInput.onchange = () => {
+                if (fileInput.files.length > 0) {
+                    const fileName = document.querySelector('.file-name');
+                    fileName.textContent = fileInput.files[0].name;
+                }
+            }
             $("#showModal").click(function () {
                 $("#loginModal").addClass("is-active");
             });
@@ -48,9 +56,11 @@
                 // DISPLAY YEET/FOLLOW BOXES
                 $("#yeetBox").show();
                 $("#followBox").show();
+                $("uploadBox").show();
             } else {
                 $("#yeetBox").hide();
                 $("#followBox").hide();
+                $("#uploadBox").hide();
             }
             search(username);
         }
@@ -225,6 +235,7 @@
                 }).then(res => res.json())
                 .then(data => {
                     console.log(data);
+                    $('#yeettext').val("");
                     search($("#currentUserName").text());
                     // redirect({
                     //     url: "/",
@@ -808,12 +819,34 @@
                                 </div>
                             </div>
                         </article>
-
-                        <form action="javascript:uploadMedia();" id="mediaForm" enctype="multipart/form-data"
-                            method="POST">
-                            <input type="file" name="mediaFile" id="media" required />
-                            <input type="submit" value="Upload" />
+                        <article id="uploadBox" class="media">
+                                <form action="javascript:uploadMedia();" id="mediaForm" enctype="multipart/form-data"
+                                method="POST">
+                            <div class="uploadField">
+                                <div class="file is-small is-boxed has-name">
+                                    <label class="file-label">
+                                            <input class="file-input is-fullwidth" type="file" name="mediaFile" id="media" required />
+                                        </form>
+                                    <span class="file-cta">
+                                        <span class="file-icon">
+                                        <i class="fas fa-upload"></i>
+                                        </span>
+                                        <span class="file-label">
+                                        Upload media
+                                        </span>
+                                    </span>
+                                    <span class="file-name">
+                                        
+                                    </span>
+                                    </label>
+                                </div>
+                                <div class="media-btn">
+                                    <input class="button are-small is-fullwidth" type="submit" value="Upload" />
+                                </div>
+                            </div>
                         </form>
+                        </article>
+
                     </div>
                 </div>
             </div>
