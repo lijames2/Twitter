@@ -408,6 +408,20 @@ module.exports = {
             }
         });
     },
+    isLiked: function(username, tweetID, callback) {
+        const isLikedQuery = `SELECT tweet FROM Likes WHERE username=? AND tweet=?`;
+        db.get(isLikedQuery, [username, tweetID], (err, result) => {
+            if (err) {
+                callback(err);
+            } else {
+                if (result) {
+                    callback(null, 1);
+                } else {
+                    callback(null, 0);
+                }
+            }
+        })
+    },
     getMediaTweets: function (mediaID, callback) {
         const gettMediaTweetsQuery = `SELECT * FROM Tweets WHERE media LIKE '%${mediaID}%'`;
         db.get(gettMediaTweetsQuery, [], (err, result) => {
