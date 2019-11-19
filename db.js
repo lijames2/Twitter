@@ -96,7 +96,10 @@ module.exports = {
             }
         });
     },
-    search: function (timestamp, limit, query, username, following, followingNames, rank, callback) {
+    search: function (timestamp, limit, query, username, following, followingNames, rank, parent, replies, media, callback) {
+        if (typeof replies !== 'undefined' && replies == false) {
+            parent = false;
+        }
         let searchQuery = 'SELECT * FROM Tweets WHERE timestamp<=?';
         if (query) {
             let words = query.split(" ");
@@ -118,6 +121,16 @@ module.exports = {
             });
             searchQuery = searchQuery.slice(0, -3);
             searchQuery += ')'
+        }
+        if (parent) {
+            searchQuery += ` AND parent='${parent}'`;
+        }
+        if (typeof replies !== 'undefined' && replies == false) {
+            searchQuery += ` AND childType != 'reply'`;
+        }
+        console.log(media);
+        if (media) {
+            searchQuery += ` AND media != 'null'`;
         }
         if (rank === 'interest') {
             searchQuery += ' ORDER BY (retweeted+likes) DESC LIMIT ?';

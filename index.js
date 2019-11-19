@@ -478,10 +478,14 @@ app.post('/search', function (req, res) {
                 });
                 console.log(followingNames)
                 let rank = "interest";
-                if (typeof req.body.rank !== 'undefined') {
+                if (typeof req.body.rank != 'undefined') {
                     rank = req.body.rank;
                 }
-                db.search(timestamp, limit, req.body.q, req.body.username, following, followingNames, rank, (err, result) => {
+                let media = false;
+                if (typeof req.body.hasMedia !== 'undefined') {
+                    media = req.body.hasMedia;
+                }
+                db.search(timestamp, limit, req.body.q, req.body.username, following, followingNames, rank, req.body.parent, req.body.replies, media, (err, result) => {
                     if (err) {
                         res.status(500).send({
                             status: "error",
@@ -505,14 +509,18 @@ app.post('/search', function (req, res) {
         });
     }//dont serch by following
     else {
-        console.log('b')
+        console.log(req.body);
         following = false;
         followingNames = [];
         let rank = "interest";
-        if (typeof req.body.rank !== 'undefined') {
+        if (typeof req.body.rank != 'undefined') {
             rank = req.body.rank;
         }
-        db.search(timestamp, limit, req.body.q, req.body.username, following, followingNames, rank, (err, result) => {
+        let media = false;
+        if (typeof req.body.hasMedia !== 'undefined') {
+            media = req.body.hasMedia;
+        }
+        db.search(timestamp, limit, req.body.q, req.body.username, following, followingNames, rank, req.body.parent, req.body.replies, media, (err, result) => {
             if (err) {
                 res.status(500).send({
                     status: "error",
