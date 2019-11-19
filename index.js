@@ -176,8 +176,8 @@ app.post('/logout', function (req, res) {
 })
 
 app.post('/additem', function (req, res) {
-    //if (!req.session.loggedin) {
-    if (false) {
+    if (!req.session.loggedin) {
+        //if (false) {
         res.status(500).send({
             status: "error",
             id: "",
@@ -189,7 +189,7 @@ app.post('/additem', function (req, res) {
         //console.log(req.body);
         let tweet = {
             id: id,
-            username: 'red',
+            username: req.session.username,
             originalUsername: "null",
             content: req.body.content,
             parent: 0,
@@ -202,8 +202,53 @@ app.post('/additem', function (req, res) {
         if (req.body.childType) {
             tweet.childType = req.body.childType;
         }
+        mediaValid = true;
         if (req.body.media) {
+            //check to see if media is used in any other tweet
+            db.mediaIDUsed(mediaIDUsed, (err, result) => {
+                if (err) {
+                    res.status(500).send({
+                        status: "error",
+                        id: id,
+                        error: err
+                    });
+                }
+                else if (result.length > 0) {
+                    console.log('media already used');
+                    mediaValid = false;
+                }
+                //check to see if username uploaded media
+                tweet.media = req.body.media.toString();
+            });
+            //check to see if username uploaded media
+            if (mediaValid == true) {
+                db.mediaOwner(mediaIDUsed, (err, result) => {
+                    if (err) {
+                        res.status(500).send({
+                            status: "error",
+                            id: id,
+                            error: err
+                        });
+                    }
+                    else {
+                        if (result != req.session.username) {
+                            console.log(`media not owned by user ${req.session.username}, owned by ${result}`)
+                            mediaValid = false;
+                        }
+                    }
+                });
+            }
+        }
+        if (mediaValid == true) {
             tweet.media = req.body.media.toString();
+        }
+        else {
+            res.status(500).send({
+                status: "error",
+                id: id,
+                error: err
+            });
+            return;
         }
         console.log(tweet);
         //if tweet has a parent, increment retweet count by 1
@@ -258,10 +303,21 @@ app.post('/addmedia', mediaPath.single('content'), function (req, res) {
         if (req.file) {
             var filename = req.file.filename;
             console.log(filename);
-            res.status(200).send({
-                status: "OK",
-                id: filename,
-                err: null
+
+            db.addMedia(req.session.username, filename, (err, result) => {
+                if (err) {
+                    res.status(500).send({
+                        status: "error",
+                        error: err
+                    });
+                }
+                else {
+                    res.status(200).send({
+                        status: "OK",
+                        id: filename,
+                        err: null
+                    });
+                }
             });
         } else {
             console.log('No File Uploaded');
