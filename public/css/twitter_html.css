@@ -65,6 +65,10 @@ body {
     content: "\00b7";
 }
 
+.link-button2::before {
+    content: "" !important;
+}
+
 .tweet-time::before {
     content: "\00b7";
 }

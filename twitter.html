@@ -122,7 +122,13 @@
                 .then(data => {
                     console.log(data);
                     data.items.forEach(item => {
-                        addTweet(item);
+                        fetch("/isLiked/" + item.id, {
+                            method: "GET"
+                        }).then(res => res.json())
+                        .then(data2 => {
+                            item.isLiked = data2.liked;
+                            addTweet(item);
+                        })
                     });
                 }).catch(err => {
                     console.error('Error: ', err);
@@ -157,23 +163,28 @@
 
         function addTweet(tweet) {
             console.log(`adding ${tweet.id}`);
+            console.log(`${tweet.isLiked}`);
+            var heartIcon = `<a onclick="like('${tweet.id}')"><i class="fa fa-heart" style="padding-left: 20px; padding-right: 10px;"> </i></a>${tweet.likes}`;
+            if(tweet.isLiked) {
+                var heartIcon = `<a onclick="unlike('${tweet.id}')"><i class="fa fa-heart" style="padding-left: 20px; padding-right: 10px; color: red"> </i></a>${tweet.likes}`;
+            }
             var newTweet =
-                `<div class="container"
-                    <div class="tweet-header">
-                        <strong>${tweet.username}</strong> <span style="color: #657786">@${tweet.username}</span> <span
-                            class="tweet-time" style="color: #657786"> ${new Date(tweet.timestamp * 1000)}</span>
-                            <strong>ID : ${tweet.id}</strong>
+            `<div class="container"
+                <div class="tweet-header">
+                    <strong>${tweet.username}</strong> <span style="color: #657786">@${tweet.username}</span> <span
+                        class="tweet-time" style="color: #657786"> ${new Date(tweet.timestamp * 1000)}</span>
+                        <strong>ID : ${tweet.id}</strong>
+                </div>
+                <div class="tweet-content">
+                    ${tweet.content}
                     </div>
-                    <div class="tweet-content">
-                        ${tweet.content}
-                        </div>
-                    <div class="tweet-footer">
-                        <i class="fas fa-reply" style="padding-right: 10px;"> </i>0
-                        <i class="fas fa-retweet" style="padding-left: 20px; padding-right: 10px;"> </i>${tweet.retweeted}
-                        <i class="fa fa-heart" style="padding-left: 20px; padding-right: 10px;"> </i>${tweet.likes}
-                    </div>
-                    <br>
-                '</div>`;
+                <div class="tweet-footer">
+                    <i class="fas fa-reply" style="padding-right: 10px;"> </i>0
+                    <i class="fas fa-retweet" style="padding-left: 20px; padding-right: 10px;"> </i>${tweet.retweeted}
+                    ${heartIcon}
+                </div>
+                <br>
+            '</div>`;
             $(newTweet).appendTo($('#tweetcolumn'));
         }
 
@@ -274,7 +285,13 @@
                 .then(data => {
                     console.log(data);
                     data.items.forEach(item => {
-                        addTweet(item);
+                        fetch("/isLiked/" + item.id, {
+                            method: "GET"
+                        }).then(res => res.json())
+                        .then(data2 => {
+                            item.isLiked = data2.liked;
+                            addTweet(item);
+                        })
                     });
                     $("#searchModal").removeClass("is-active");
                 }).catch(err => {
@@ -447,6 +464,46 @@
             $form.submit();
         }
 
+        function like(tweetID) {
+            let data = {
+                like: true
+            }
+            fetch("/item/" + tweetID + "/like", {
+                method: "POST",
+                headers: {
+                    'Accept': 'application/json, text/plain, */*',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            }).then(res => res.json())
+            .then(data => {
+                console.log(data);
+                displayProfile($("#currentUserName").text());
+            }).catch(err => {
+                console.error('Error: ', err);
+            })
+        }
+
+        function unlike(tweetID) {
+            let data = {
+                like: false
+            }
+            fetch("/item/" + tweetID + "/like", {
+                method: "POST",
+                headers: {
+                    'Accept': 'application/json, text/plain, */*',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            }).then(res => res.json())
+            .then(data => {
+                console.log(data);
+                displayProfile($("#currentUserName").text());
+            }).catch(err => {
+                console.error('Error: ', err);
+            })
+        }
+
         function login() { //fix for reseting sockets
             let data = {
                 username: $("#username").val(),
@@ -540,7 +597,7 @@
             </div> -->
             <div class="navbar-item">
                 <div id='search' class="navbar-item">
-                    <a id="showSearchModal" class="link-button">Advanced Search</a>
+                    <a id="showSearchModal" class="link-button link-button2">Advanced Search</a>
                     <div id="searchModal" class="modal">
                         <div class="modal-background"></div>
                         <div class="container search-wrapper">
@@ -586,7 +643,7 @@
 
             <div class="navbar-end">
                 <div id='login' class="navbar-item">
-                    <a id="showModal" class="link-button">Log In</a>
+                    <a id="showModal" class="link-button link-button2">Log In</a>
                     <div id="loginModal" class="modal">
                         <div class="modal-background"></div>
                         <div class="container login-wrapper">
@@ -622,11 +679,11 @@
 
                                 <form action="/signup/" method="GET">
                                     <h6 class="login-subtitle">New to Yeeter? <input type="submit" class="link-button"
-                                            value="Sign up now Â»" /></h6>
+                                            value="Sign up now »" /></h6>
                                 </form>
                                 <form action="/verify/" method="GET">
                                     <h6 class="login-subtitle">Already signed up? <input type="submit"
-                                            class="link-button" value="Verify your account Â»" /></h6>
+                                            class="link-button" value="Verify your account »" /></h6>
                                 </form>
                             </div>
                             <br />
@@ -643,7 +700,7 @@
                             </div>
                             <div class="media-right">
                                 <form action="/logout/" method="POST" style="margin-block-end: 0px">
-                                    <input type="submit" class="link-button" style="margin-top: 1px" value="Log Out" />
+                                    <input type="submit" class="link-button link-button2" style="margin-top: 1px" value="Log Out" />
                                 </form>
                             </div>
                         </article>

@@ -275,6 +275,7 @@ app.post('/item/:id/like', function (req, res) {
     let id = req.params.id;
     //req.session.username = 'red';
     console.log(`liking/unliking ${id}`);
+    console.log(req.body.like);
     if (!req.session.loggedin) {
         //if (false) {
         res.status(500).send({
@@ -636,7 +637,34 @@ app.get('/user/:username/following', function (req, res) {
             })
         }
     })
-})
+});
+
+app.get('/isLiked/:tweetId', function(req, res) {
+    let username = req.session.username;
+    let tweetId = req.params.tweetId;
+    console.log(username + " " + tweetId);
+    db.isLiked(username, tweetId, (err, result) => {
+        if (err) {
+            res.status(500).send({
+                status: "error",
+                error: err
+            });
+        } else {
+            if(result) {
+                res.status(200).send({
+                    status: "OK",
+                    liked: true
+                });
+            } else {
+                res.status(200).send({
+                    status: "OK",
+                    liked: false
+                })
+            }
+
+        }
+    })
+});
 
 app.post('/follow', function (req, res) {
     if (!req.session.loggedin) {
