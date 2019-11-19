@@ -299,42 +299,47 @@ module.exports = {
         console.log('start checking media ids')
         mediaValid = true;
         count = 0;
-        mediaIDs.forEach(mediaID => {
-            console.log(mediaID)
-            const mediaIDUsedQuery = `SELECT * FROM Tweets WHERE media LIKE '%${mediaID}%'`;
-            const mediaOwnerQuery = `SELECT username FROM Media WHERE mediaid=?`;
-            db.all(mediaIDUsedQuery, [], (err, result) => {
-                if (err) {
-                    mediaValid = false;
-                    callback(err);
-                } else {
-                    //console.log(result.length)
-                    if (result.length > 0) {
-                        console.log('media already used db')
+        if (!mediaIDs) {
+            callback(null, true);
+        }
+        else {
+            mediaIDs.forEach(mediaID => {
+                console.log(mediaID)
+                const mediaIDUsedQuery = `SELECT * FROM Tweets WHERE media LIKE '%${mediaID}%'`;
+                const mediaOwnerQuery = `SELECT username FROM Media WHERE mediaid=?`;
+                db.all(mediaIDUsedQuery, [], (err, result) => {
+                    if (err) {
                         mediaValid = false;
-                    }
-                    db.get(mediaOwnerQuery, [mediaID], (err, result) => {
-                        if (err) {
+                        callback(err);
+                    } else {
+                        //console.log(result.length)
+                        if (result.length > 0) {
+                            console.log('media already used db')
                             mediaValid = false;
-                            callback(err);
-                        } else {
-                            if (result.username != username) {
-                                console.log('media not owned by username db')
+                        }
+                        db.get(mediaOwnerQuery, [mediaID], (err, result) => {
+                            if (err) {
                                 mediaValid = false;
+                                callback(err);
+                            } else {
+                                if (result.username != username) {
+                                    console.log('media not owned by username db')
+                                    mediaValid = false;
+                                }
                             }
-                        }
-                        if ((mediaID === mediaIDs[mediaIDs.length - 1]) && (mediaValid == true)) {
-                            console.log('callback true')
-                            callback(null, true);
-                        }
-                        else if ((mediaID === mediaIDs[mediaIDs.length - 1]) && (mediaValid == false)) {
-                            console.log('callback false')
-                            callback(null, false);
-                        }
-                    });
+                            if ((mediaID === mediaIDs[mediaIDs.length - 1]) && (mediaValid == true)) {
+                                console.log('callback true')
+                                callback(null, true);
+                            }
+                            else if ((mediaID === mediaIDs[mediaIDs.length - 1]) && (mediaValid == false)) {
+                                console.log('callback false')
+                                callback(null, false);
+                            }
+                        });
 
-                }
+                    }
+                });
             });
-        });
+        }
     },
 };

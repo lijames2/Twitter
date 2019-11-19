@@ -176,8 +176,8 @@ app.post('/logout', function (req, res) {
 })
 
 app.post('/additem', function (req, res) {
-    if (!req.session.loggedin) {
-    //if (false) {
+    //if (!req.session.loggedin) {
+    if (false) {
         res.status(500).send({
             status: "error",
             id: "",
@@ -187,7 +187,7 @@ app.post('/additem', function (req, res) {
     else {
         let id = Math.floor((Math.random() * 1000000000) + 1);
         //console.log(req.body);
-        //req.session.username = 'red'
+        req.session.username = 'red'
         let tweet = {
             id: id,
             username: req.session.username,
@@ -219,10 +219,10 @@ app.post('/additem', function (req, res) {
                 return;
             }
             else {
-                if (mediaValid == true) {
+                if (req.body.media && mediaValid == true) {
                     tweet.media = req.body.media.toString();
                 }
-                else {
+                else if (mediaValid == false){
                     res.status(500).send({
                         status: "error",
                         error: 'media file invalid'
