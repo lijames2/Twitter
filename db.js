@@ -264,8 +264,8 @@ module.exports = {
         });
     },
     addMedia: function (username, mediaid, callback) {
-        const followQuery = 'INSERT INTO Media(username,mediaid) VALUES(?,?)';
-        db.run(followQuery, [username, mediaid], (err, result) => {
+        const addMediaQuery = 'INSERT INTO Media(username,mediaid) VALUES(?,?)';
+        db.run(addMediaQuery, [username, mediaid], (err, result) => {
             if (err) {
                 callback(err);
             } else {
@@ -276,7 +276,7 @@ module.exports = {
     //returns array of tweets using media
     mediaIDUsed: function (mediaID, callback) {
         const followQuery = `SELECT * FROM Tweets WHERE media LIKE '%${mediaID}%'`;
-        db.all(followQuery, [username, mediaid], (err, result) => {
+        db.all(followQuery, [], (err, result) => {
             if (err) {
                 callback(err);
             } else {
@@ -287,12 +287,54 @@ module.exports = {
     //returns username of user that uploaded media
     mediaOwner: function (mediaID, callback) {
         const followQuery = `SELECT username FROM Media WHERE mediaid=?`;
-        db.get(followQuery, [mediaid], (err, result) => {
+        db.get(followQuery, [mediaID], (err, result) => {
             if (err) {
                 callback(err);
             } else {
                 callback(null, result);
             }
+        });
+    },
+    mediaValid: function (username, mediaIDs, callback) {
+        console.log('start checking media ids')
+        mediaValid = true;
+        count = 0;
+        mediaIDs.forEach(mediaID => {
+            console.log(mediaID)
+            const mediaIDUsedQuery = `SELECT * FROM Tweets WHERE media LIKE '%${mediaID}%'`;
+            const mediaOwnerQuery = `SELECT username FROM Media WHERE mediaid=?`;
+            db.all(mediaIDUsedQuery, [], (err, result) => {
+                if (err) {
+                    mediaValid = false;
+                    callback(err);
+                } else {
+                    //console.log(result.length)
+                    if (result.length > 0) {
+                        console.log('media already used db')
+                        mediaValid = false;
+                    }
+                    db.get(mediaOwnerQuery, [mediaID], (err, result) => {
+                        if (err) {
+                            mediaValid = false;
+                            callback(err);
+                        } else {
+                            if (result.username != username) {
+                                console.log('media not owned by username db')
+                                mediaValid = false;
+                            }
+                        }
+                        if ((mediaID === mediaIDs[mediaIDs.length - 1]) && (mediaValid == true)) {
+                            console.log('callback true')
+                            callback(null, true);
+                        }
+                        else if ((mediaID === mediaIDs[mediaIDs.length - 1]) && (mediaValid == false)) {
+                            console.log('callback false')
+                            callback(null, false);
+                        }
+                    });
+
+                }
+            });
         });
     },
 };

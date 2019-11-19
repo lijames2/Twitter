@@ -177,16 +177,17 @@ app.post('/logout', function (req, res) {
 
 app.post('/additem', function (req, res) {
     if (!req.session.loggedin) {
-        //if (false) {
+    //if (false) {
         res.status(500).send({
             status: "error",
             id: "",
-            error: err
+            error: 'not logged in'
         });
     }
     else {
         let id = Math.floor((Math.random() * 1000000000) + 1);
         //console.log(req.body);
+        //req.session.username = 'red'
         let tweet = {
             id: id,
             username: req.session.username,
@@ -203,10 +204,46 @@ app.post('/additem', function (req, res) {
             tweet.childType = req.body.childType;
         }
         mediaValid = true;
-        if (req.body.media && mediaValid) {
-            media.forEach(mediaID => {
-                //check to see if media is used in any other tweet
-                db.mediaIDUsed(mediaID, (err, result) => {
+        db.mediaValid(req.session.username, req.body.media, (err, result) => {
+            console.log(`200 ${result}`)
+            if (err) {
+                res.status(500).send({
+                    status: "error",
+                    error: err
+                });
+            } else if (!result) {
+                res.status(500).send({
+                    status: "error",
+                    error: 'media id not valid'
+                });
+                return;
+            }
+            else {
+                if (mediaValid == true) {
+                    tweet.media = req.body.media.toString();
+                }
+                else {
+                    res.status(500).send({
+                        status: "error",
+                        error: 'media file invalid'
+                    });
+                    return;
+                }
+                console.log(tweet);
+                //if tweet has a parent, increment retweet count by 1
+                if (tweet.parent) {
+                    db.incrementRetweetedCount(tweet.parent, (err, result) => {
+                        if (err) {
+                            res.status(500).send({
+                                status: "error",
+                                id: id,
+                                error: err
+                            });
+                            return;
+                        }
+                    });
+                }
+                db.addTweet(tweet, (err, result) => {
                     if (err) {
                         res.status(500).send({
                             status: "error",
@@ -214,77 +251,20 @@ app.post('/additem', function (req, res) {
                             error: err
                         });
                     }
-                    else if (result.length > 0) {
-                        console.log('media already used');
-                        mediaValid = false;
+                    else if (result == 1) {
+                        res.status(200).send({
+                            status: "OK",
+                            id: id,
+                            error: null
+                        });
                     }
-                    //check to see if username uploaded media
-                    tweet.media = req.body.media.toString();
-                });
-                //check to see if username uploaded media
-                if (mediaValid == true) {
-                    db.mediaOwner(mediaID, (err, result) => {
-                        if (err) {
-                            res.status(500).send({
-                                status: "error",
-                                id: id,
-                                error: err
-                            });
-                        }
-                        else {
-                            if (result != req.session.username) {
-                                console.log(`media not owned by user ${req.session.username}, owned by ${result}`)
-                                mediaValid = false;
-                            }
-                        }
-                    });
-                }
-            });
-        }
-        if (mediaValid == true) {
-            tweet.media = req.body.media.toString();
-        }
-        else {
-            res.status(500).send({
-                status: "error",
-                id: id,
-                error: err
-            });
-            return;
-        }
-        console.log(tweet);
-        //if tweet has a parent, increment retweet count by 1
-        if (tweet.parent) {
-            db.incrementRetweetedCount(tweet.parent, (err, result) => {
-                if (err) {
-                    res.status(500).send({
-                        status: "error",
-                        id: id,
-                        error: err
-                    });
-                }
-            });
-        }
-        db.addTweet(tweet, (err, result) => {
-            if (err) {
-                res.status(500).send({
-                    status: "error",
-                    id: id,
-                    error: err
-                });
-            }
-            else if (result == 1) {
-                res.status(200).send({
-                    status: "OK",
-                    id: id,
-                    error: null
-                });
-            }
-            else {
-                res.status(500).send({
-                    status: "error",
-                    id: id,
-                    error: err
+                    else {
+                        res.status(500).send({
+                            status: "error",
+                            id: id,
+                            error: err
+                        });
+                    }
                 });
             }
         });
