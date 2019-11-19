@@ -271,6 +271,64 @@ app.post('/additem', function (req, res) {
     }
 })
 
+app.post('/item/:id/like', function (req, res) {
+    let id = req.params.id;
+    //req.session.username = 'red';
+    console.log(`liking/unliking ${id}`);
+    if (!req.session.loggedin) {
+        //if (false) {
+        res.status(500).send({
+            status: "error",
+            error: "Not logged in"
+        });
+    }
+    else {
+        if (req.body.like) {
+            db.like(req.session.username, id, (err, result) => {
+                if (err) {
+                    res.status(500).send({
+                        status: "error",
+                        id: id,
+                        error: err
+                    });
+                }
+                else {
+                    res.status(200).send({
+                        status: "OK"
+                    });
+                }
+            });
+        }
+        else if (req.body.like == false) {
+            db.unlike(req.session.username, id, (err, result) => {
+                if (err) {
+                    res.status(500).send({
+                        status: "error",
+                        id: id,
+                        error: err
+                    });
+                } else if (result > 0) {
+                    res.status(500).send({
+                        status: "error",
+                        error: err
+                    });
+                }
+                else {
+                    res.status(200).send({
+                        status: "OK"
+                    });
+                }
+            });
+        }
+        else {
+            res.status(500).send({
+                status: "error",
+                error: "invlid body"
+            });
+        }
+    }
+})
+
 app.post('/addmedia', mediaPath.single('content'), function (req, res) {
     //console.log(req);
 
@@ -331,7 +389,7 @@ app.get('/item/:id', function (req, res) {
                 let media = result.media.split(",");
                 result.media = media;
                 let property = {
-                    likes : result.likes
+                    likes: result.likes
                 }
                 result.property = property;
                 res.status(200).send({

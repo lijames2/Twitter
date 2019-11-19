@@ -342,4 +342,52 @@ module.exports = {
             });
         }
     },
+    like: function (username, tweetID, callback) {
+        console.log(`${username} , ${tweetID}`);
+        const likeQuery = `INSERT INTO Likes(username,tweet) VALUES(?,?)`;
+        db.run(likeQuery, [username, tweetID], (err, result) => {
+            if (err) {
+                console.log(err)
+                callback('Tweet already liked');
+            } else {
+                const incrementLikesQuery = 'UPDATE Tweets SET likes=likes+1 WHERE id=?';
+                db.run(incrementLikesQuery, [tweetID], (err, result) => {
+                    if (err) {
+                        callback(err);
+                    } else {
+                        callback(null, result);
+                    }
+                });
+            }
+        });
+    },
+    unlike: function (username, tweetID, callback) {
+        const unlikeQuery = `DELETE FROM Likes WHERE username=? AND tweet=?`;
+        const getRowQuery = `SELECT * FROM Likes WHERE username=? AND tweet=?`;
+        db.get(getRowQuery, [username, tweetID], (err, result) => {
+            if (err) {
+                callback(err);
+            } else {
+                if (result) {
+                    db.run(unlikeQuery, [username, tweetID], (err, result) => {
+                        if (err) {
+                            callback(err);
+                        } else {
+                            const decrementLikesQuery = 'UPDATE Tweets SET likes=likes-1 WHERE id=?';
+                            db.run(decrementLikesQuery, [tweetID], (err, result) => {
+                                if (err) {
+                                    callback(err);
+                                } else {
+                                    callback(null, result);
+                                }
+                            });
+                        }
+                    });
+                }
+                else {
+                    callback('not liked');
+                }
+            }
+        });
+    },
 };
