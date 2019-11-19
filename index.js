@@ -447,7 +447,7 @@ app.delete('/item/:id', function (req, res) {
 })
 
 app.post('/search', function (req, res) {
-    //console.log(req.body);
+    console.log(req.body);
     let timestamp = Math.floor((new Date()).getTime() / 1000);
     if (req.body.timestamp) {
         timestamp = Math.floor(req.body.timestamp);
@@ -460,6 +460,7 @@ app.post('/search', function (req, res) {
         }
     }
     //console.log(limit);
+    //if logged in and search by following
     if (req.session.loggedin && (typeof req.body.following === 'undefined' || req.body.following)) {
         following = true;
         console.log('a')
@@ -476,13 +477,23 @@ app.post('/search', function (req, res) {
                     followingNames.push(user.User);
                 });
                 console.log(followingNames)
-                db.search(timestamp, limit, req.body.q, req.body.username, following, followingNames, (err, result) => {
+                let rank = "interest";
+                if (typeof req.body.rank !== 'undefined') {
+                    rank = req.body.rank;
+                }
+                db.search(timestamp, limit, req.body.q, req.body.username, following, followingNames, rank, (err, result) => {
                     if (err) {
                         res.status(500).send({
                             status: "error",
                             error: err
                         });
                     } else {
+                        result.forEach(item => {
+                            let property = {
+                                likes: item.likes
+                            }
+                            item.property = property;
+                        });
                         res.status(200).send({
                             status: "OK",
                             error: null,
@@ -492,18 +503,28 @@ app.post('/search', function (req, res) {
                 })
             }
         });
-    }
+    }//dont serch by following
     else {
         console.log('b')
         following = false;
         followingNames = [];
-        db.search(timestamp, limit, req.body.q, req.body.username, following, followingNames, (err, result) => {
+        let rank = "interest";
+        if (typeof req.body.rank !== 'undefined') {
+            rank = req.body.rank;
+        }
+        db.search(timestamp, limit, req.body.q, req.body.username, following, followingNames, rank, (err, result) => {
             if (err) {
                 res.status(500).send({
                     status: "error",
                     error: err
                 });
             } else {
+                result.forEach(item => {
+                    let property = {
+                        likes: item.likes
+                    }
+                    item.property = property;
+                });
                 res.status(200).send({
                     status: "OK",
                     error: null,
